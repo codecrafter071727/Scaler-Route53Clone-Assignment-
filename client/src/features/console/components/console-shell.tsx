@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ConsoleFooter } from "@/features/console/components/console-footer";
 import { ConsoleHeader } from "@/features/console/components/console-header";
 import { SideNav } from "@/features/route53";
-import { InfoCircleIcon, MenuIcon } from "@/shared/icons";
+import { InfoCircleOutlineIcon, MenuIcon } from "@/shared/icons";
 
 export type Crumb = {
   label: string;
@@ -37,9 +37,9 @@ export function ConsoleShell({
           type="button"
           aria-label={navOpen ? "Close side navigation" : "Open side navigation"}
           onClick={() => setNavOpen((open) => !open)}
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#006ce0] text-white"
+          className="flex h-8 w-8 items-center justify-center text-[#0f141a] hover:text-[#006ce0]"
         >
-          <MenuIcon className="h-4 w-4" />
+          <MenuIcon className="h-5 w-5" />
         </button>
         <nav aria-label="Breadcrumbs" className="flex min-w-0 flex-1 items-center gap-1.5 text-[15px]">
           {crumbs.map((crumb, index) => {
@@ -64,9 +64,9 @@ export function ConsoleShell({
           <button
             type="button"
             aria-label="Info"
-            className="mr-1 flex h-8 w-8 items-center justify-center rounded-full text-[#006ce0] hover:bg-[#f2f8fd]"
+            className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#687078] hover:text-[#545b64]"
           >
-            <InfoCircleIcon className="h-5 w-5" />
+            <InfoCircleOutlineIcon className="h-5 w-5" />
           </button>
         )}
       </div>

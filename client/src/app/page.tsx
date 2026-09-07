@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { AuthPage } from "@/features/auth";
 
 export default function Home() {
-  redirect("/hostedzones");
+  return <AuthPage />;
 }

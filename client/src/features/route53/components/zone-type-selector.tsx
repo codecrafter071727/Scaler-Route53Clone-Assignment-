@@ -28,9 +28,9 @@ export function ZoneTypeSelector({ value, onChange }: ZoneTypeSelectorProps) {
     <div
       role="radiogroup"
       aria-label="Hosted zone type"
-      className="flex max-w-4xl flex-col overflow-hidden rounded-xl border border-[#d5dbdb] sm:flex-row"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2"
     >
-      {OPTIONS.map((option, index) => {
+      {OPTIONS.map((option) => {
         const selected = value === option.id;
         return (
           <button
@@ -39,9 +39,11 @@ export function ZoneTypeSelector({ value, onChange }: ZoneTypeSelectorProps) {
             role="radio"
             aria-checked={selected}
             onClick={() => onChange(option.id)}
-            className={`flex min-w-0 flex-1 items-start gap-3 px-4 py-3.5 text-left ${
-              selected ? "bg-[#f2f8fd] outline outline-2 outline-[#006ce0] -outline-offset-2" : "bg-white"
-            } ${index === 0 ? "sm:border-r sm:border-[#d5dbdb]" : ""}`}
+            className={`flex min-h-[76px] items-start gap-3 rounded-[8px] border-2 px-4 py-3 text-left ${
+              selected
+                ? "border-[#006ce0] bg-[#f2f8fd]"
+                : "border-[#d5dbdb] bg-white hover:bg-[#fafafa]"
+            }`}
           >
             <span
               className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 ${
@@ -50,11 +52,11 @@ export function ZoneTypeSelector({ value, onChange }: ZoneTypeSelectorProps) {
             >
               {selected && <span className="h-2.5 w-2.5 rounded-full bg-[#006ce0]" />}
             </span>
-            <span>
+            <span className="min-w-0 flex-1">
               <span className="block text-[14px] font-bold leading-5 text-[#0f141a]">
                 {option.title}
               </span>
-              <span className="mt-0.5 block text-[14px] leading-5 text-[#545b64]">
+              <span className="mt-0.5 block text-[13px] leading-5 text-[#545b64]">
                 {option.description}
               </span>
             </span>

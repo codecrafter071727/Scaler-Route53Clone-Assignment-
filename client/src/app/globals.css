@@ -51,6 +51,16 @@ body {
   font-family: "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif;
 }
 
+.font-amazon-bold {
+  font-family: "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif;
+  font-weight: 700;
+}
+
+.font-amazon-black {
+  font-family: "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif;
+  font-weight: 700;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

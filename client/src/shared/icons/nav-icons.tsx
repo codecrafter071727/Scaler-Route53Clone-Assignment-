@@ -3,9 +3,9 @@ import type { IconProps } from "./types";
 export function MenuIcon({ className = "h-4 w-4" }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden>
-      <rect x="2" y="3.5" width="12" height="1.5" rx="0.5" />
-      <rect x="2" y="7.25" width="12" height="1.5" rx="0.5" />
-      <rect x="2" y="11" width="12" height="1.5" rx="0.5" />
+      <rect x="2" y="3.4" width="12" height="1.75" rx="0.55" />
+      <rect x="2" y="7.125" width="12" height="1.75" rx="0.55" />
+      <rect x="2" y="10.85" width="12" height="1.75" rx="0.55" />
     </svg>
   );
 }

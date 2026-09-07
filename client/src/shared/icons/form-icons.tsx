@@ -7,3 +7,26 @@ export function InfoCircleIcon({ className = "h-4 w-4" }: IconProps) {
     </svg>
   );
 }
+
+export function InfoCircleOutlineIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" aria-hidden>
+      <circle cx="8" cy="8" r="6.1" fill="white" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="8" cy="5" r="1" fill="currentColor" />
+      <rect x="7.1" y="6.85" width="1.8" height="4.4" rx="0.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function CloseIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d="M4 4l8 8M12 4l-8 8"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
