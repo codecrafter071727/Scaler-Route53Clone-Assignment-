@@ -7,6 +7,7 @@ import {
   SettingsIcon,
   TerminalIcon,
 } from "@/shared/icons";
+import { AccountMenu } from "./account-menu";
 
 export function ConsoleHeader() {
   return (
@@ -66,13 +67,7 @@ export function ConsoleHeader() {
           <span>Global</span>
           <Caret />
         </button>
-        <button
-          type="button"
-          className="flex h-8 max-w-[280px] items-center gap-1 truncate rounded px-2 hover:bg-white/10"
-        >
-          <span className="truncate">Anshul bhathija (452857281268)</span>
-          <Caret />
-        </button>
+        <AccountMenu />
       </div>
     </header>
   );

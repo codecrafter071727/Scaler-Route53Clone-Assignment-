@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AccountCreatedDialog } from "./account-created-dialog";
 import { AuthBanner } from "./auth-banner";
 import { AuthCard } from "./auth-card";
 import { AuthFooter } from "./auth-footer";
@@ -11,22 +12,27 @@ import { AuthTopBar } from "./auth-top-bar";
 
 type AuthMode = "signin" | "signup";
 
-const AUTH_FLAG = "aws-console-authenticated";
+const afterAuthPath = process.env.NEXT_PUBLIC_AFTER_AUTH_PATH;
+if (!afterAuthPath) {
+  throw new Error("NEXT_PUBLIC_AFTER_AUTH_PATH is not set");
+}
 
 export function AuthPage() {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("signin");
+  const [showCreated, setShowCreated] = useState(false);
 
-  function handleSuccess() {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(AUTH_FLAG, "1");
-    }
-    router.push("/hostedzones");
+  function handleSignInSuccess() {
+    router.push(afterAuthPath);
+  }
+
+  function handleSignUpSuccess() {
+    setShowCreated(true);
+    setMode("signin");
   }
 
   return (
     <div className="relative min-h-screen bg-[#f2f3f3]">
-      {/* AWS-style cube watermark - left side (mirrored) */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -scale-x-100"
@@ -39,7 +45,6 @@ export function AuthPage() {
           filter: "brightness(1.15)",
         }}
       />
-      {/* AWS-style cube watermark - right side */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -53,8 +58,11 @@ export function AuthPage() {
         }}
       />
 
-      {/* Top links pinned to the viewport right edge */}
       <AuthTopBar />
+      <AccountCreatedDialog
+        open={showCreated}
+        onClose={() => setShowCreated(false)}
+      />
 
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-[980px] flex-col px-5 pb-6 pt-5">
         <header className="relative mb-2">
@@ -70,7 +78,8 @@ export function AuthPage() {
           <AuthCard
             mode={mode}
             onModeChange={setMode}
-            onSuccess={handleSuccess}
+            onSignInSuccess={handleSignInSuccess}
+            onSignUpSuccess={handleSignUpSuccess}
           />
           <AuthMarketing />
         </div>

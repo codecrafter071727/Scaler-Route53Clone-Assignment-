@@ -2,6 +2,8 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { signIn } from "@/features/auth/api/auth-api";
+import { getApiErrorMessage } from "@/features/auth/lib/api-error";
 import { AUTH_COPY } from "@/features/auth/data/auth-copy";
 
 type Props = {
@@ -17,10 +19,21 @@ export function SignInForm({ onSuccess, onSwitchToSignUp }: Props) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    onSuccess();
+    setError("");
+    setLoading(true);
+    try {
+      await signIn({ identifier, password });
+      onSuccess();
+    } catch (err) {
+      setError(getApiErrorMessage(err, "Unable to sign in"));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -71,11 +84,14 @@ export function SignInForm({ onSuccess, onSwitchToSignUp }: Props) {
         </div>
       </div>
 
+      {error ? <p className="text-[13px] text-[#d13212]">{error}</p> : null}
+
       <button
         type="submit"
-        className="h-8 w-full rounded-full border border-[#ff9900] bg-[#ff9900] font-amazon-bold text-[14px] text-[#0f141a] hover:bg-[#ec7211]"
+        disabled={loading}
+        className="h-8 w-full rounded-full border border-[#ff9900] bg-[#ff9900] font-amazon-bold text-[14px] text-[#0f141a] hover:bg-[#ec7211] disabled:opacity-60"
       >
-        {AUTH_COPY.signIn}
+        {loading ? "Signing in…" : AUTH_COPY.signIn}
       </button>
 
       <p className="text-center text-[14px]">

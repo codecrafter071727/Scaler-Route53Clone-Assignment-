@@ -9,10 +9,16 @@ type AuthMode = "signin" | "signup";
 type AuthCardProps = {
   mode: AuthMode;
   onModeChange: (mode: AuthMode) => void;
-  onSuccess: () => void;
+  onSignInSuccess: () => void;
+  onSignUpSuccess: () => void;
 };
 
-export function AuthCard({ mode, onModeChange, onSuccess }: AuthCardProps) {
+export function AuthCard({
+  mode,
+  onModeChange,
+  onSignInSuccess,
+  onSignUpSuccess,
+}: AuthCardProps) {
   const title =
     mode === "signin" ? AUTH_COPY.signInTitle : AUTH_COPY.signUpTitle;
 
@@ -27,12 +33,12 @@ export function AuthCard({ mode, onModeChange, onSuccess }: AuthCardProps) {
         <div className="px-5 pb-5 pt-1">
           {mode === "signin" ? (
             <SignInForm
-              onSuccess={onSuccess}
+              onSuccess={onSignInSuccess}
               onSwitchToSignUp={() => onModeChange("signup")}
             />
           ) : (
             <SignUpForm
-              onSuccess={onSuccess}
+              onSuccess={onSignUpSuccess}
               onSwitchToSignIn={() => onModeChange("signin")}
             />
           )}

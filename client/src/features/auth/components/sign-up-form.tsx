@@ -2,6 +2,8 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { signUp } from "@/features/auth/api/auth-api";
+import { getApiErrorMessage } from "@/features/auth/lib/api-error";
 import { AUTH_COPY } from "@/features/auth/data/auth-copy";
 
 type Props = {
@@ -21,15 +23,30 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: Props) {
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
       setError("Passwords do not match.");
       return;
     }
     setError("");
-    onSuccess();
+    setLoading(true);
+    try {
+      await signUp({
+        name,
+        email,
+        phone,
+        password,
+        confirm_password: confirm,
+      });
+      onSuccess();
+    } catch (err) {
+      setError(getApiErrorMessage(err, "Unable to create account"));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -92,6 +109,7 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: Props) {
           type={showPassword ? "text" : "password"}
           autoComplete="new-password"
           required
+          minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className={fieldInput}
@@ -108,6 +126,7 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: Props) {
           type={showPassword ? "text" : "password"}
           autoComplete="new-password"
           required
+          minLength={8}
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           className={fieldInput}
@@ -127,9 +146,10 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: Props) {
 
       <button
         type="submit"
-        className="h-8 w-full rounded-full border border-[#ff9900] bg-[#ff9900] font-amazon-bold text-[14px] text-[#0f141a] hover:bg-[#ec7211]"
+        disabled={loading}
+        className="h-8 w-full rounded-full border border-[#ff9900] bg-[#ff9900] font-amazon-bold text-[14px] text-[#0f141a] hover:bg-[#ec7211] disabled:opacity-60"
       >
-        {AUTH_COPY.signUp}
+        {loading ? "Creating…" : AUTH_COPY.signUp}
       </button>
 
       <p className="text-center text-[14px] text-[#0f141a]">
