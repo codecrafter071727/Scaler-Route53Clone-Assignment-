@@ -24,9 +24,9 @@ export function AuthCard({
 
   return (
     <div className="w-full max-w-[340px] shrink-0">
-      <div className="overflow-hidden rounded-2xl border border-[#c6c6cd] bg-white">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface">
         <div className="border-b border-transparent px-5 pb-2 pt-3">
-          <h1 className="font-amazon-bold text-[20px] leading-6 tracking-[-0.3px] text-[#0f141a]">
+          <h1 className="font-amazon-bold text-[20px] leading-6 tracking-[-0.3px] text-foreground">
             {title}
           </h1>
         </div>
@@ -45,13 +45,13 @@ export function AuthCard({
         </div>
       </div>
 
-      <p className="mt-3 text-[12px] leading-4 tracking-[0.06px] text-[#656871]">
+      <p className="mt-3 text-[12px] leading-4 tracking-[0.06px] text-muted">
         {AUTH_COPY.agreementPrefix}{" "}
         <a
           href="https://aws.amazon.com/terms"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#006ce0] underline"
+          className="text-aws-blue underline"
         >
           {AUTH_COPY.customerAgreement}
         </a>{" "}
@@ -60,7 +60,7 @@ export function AuthCard({
           href="https://aws.amazon.com/privacy"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#006ce0] underline"
+          className="text-aws-blue underline"
         >
           {AUTH_COPY.privacyNotice}
         </a>
@@ -69,7 +69,7 @@ export function AuthCard({
           href="https://aws.amazon.com/legal/cookies"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#006ce0] underline"
+          className="text-aws-blue underline"
         >
           {AUTH_COPY.cookieNotice}
         </a>

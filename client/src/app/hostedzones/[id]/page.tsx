@@ -5,7 +5,7 @@ export default function HostedZoneDetailPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-w-0 flex-1 overflow-auto bg-white px-6 pb-4 pt-5 text-[14px] text-[#545b64]">
+        <main className="min-w-0 flex-1 overflow-auto bg-background px-6 pb-4 pt-5 text-[14px] text-muted-2">
           Loading hosted zone…
         </main>
       }

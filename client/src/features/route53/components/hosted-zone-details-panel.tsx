@@ -20,10 +20,10 @@ type TabId = "details" | "tags";
 function DetailField({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="py-3">
-      <div className="break-all text-[14px] font-bold leading-5 text-[#0f141a]">
+      <div className="break-all text-[14px] font-bold leading-5 text-foreground">
         {label}
       </div>
-      <div className="break-all text-[14px] font-normal leading-5 text-[#0f141a]">
+      <div className="break-all text-[14px] font-normal leading-5 text-foreground">
         {children}
       </div>
     </div>
@@ -49,7 +49,7 @@ function IconBtn({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className="flex h-[31px] w-[27px] items-center justify-center rounded-full p-1 text-[#424650] hover:bg-[#f2f3f3]"
+      className="flex h-[31px] w-[27px] items-center justify-center rounded-full p-1 text-sidebar-text hover:bg-surface-muted"
     >
       {children}
     </button>
@@ -60,14 +60,14 @@ function PanelHeader({ title, onClose }: { title: string; onClose: () => void })
   return (
     <div className="shrink-0 px-4 pl-5 pr-4">
       <div className="my-3.5 flex items-start justify-between gap-2">
-        <h2 className="mt-[5px] min-w-0 flex-1 text-[18px] font-bold leading-[22px] tracking-[-0.18px] text-[#0f141a]">
+        <h2 className="mt-[5px] min-w-0 flex-1 text-[18px] font-bold leading-[22px] tracking-[-0.18px] text-foreground">
           {title}
         </h2>
         <div className="ml-2 flex shrink-0 items-center">
           <IconBtn label="Split panel preferences">
             <SettingsIcon className="h-4 w-4" />
           </IconBtn>
-          <span className="mx-2 my-1 h-[23px] w-px bg-[#c6c6cd]" aria-hidden />
+          <span className="mx-2 my-1 h-[23px] w-px bg-border" aria-hidden />
           <IconBtn label="Close" onClick={onClose}>
             <ChevronTiny className="h-4 w-4" />
           </IconBtn>
@@ -79,7 +79,7 @@ function PanelHeader({ title, onClose }: { title: string; onClose: () => void })
 
 function EmptySelection() {
   return (
-    <p className="text-[14px] font-normal leading-5 text-[#0f141a]">
+    <p className="text-[14px] font-normal leading-5 text-foreground">
       Select a hosted zone to see its details
     </p>
   );
@@ -172,22 +172,22 @@ function ZoneDetails({ zoneId }: { zoneId: number }) {
     };
   }, [zoneId]);
 
-  if (loading) return <p className="px-4 py-6 text-[#545b64]">Loading details…</p>;
-  if (error) return <p className="px-4 py-6 text-[#d13212]">{error}</p>;
+  if (loading) return <p className="px-4 py-6 text-muted-2">Loading details…</p>;
+  if (error) return <p className="px-4 py-6 text-danger">{error}</p>;
   if (!detail) return null;
 
   const tabClass = (tab: TabId) =>
     `flex-1 border-b-2 px-3 py-2 text-center text-[14px] font-bold leading-5 ${
       activeTab === tab
-        ? "border-[#006ce0] text-[#006ce0]"
-        : "border-transparent text-[#545b64] hover:text-[#0f141a]"
+        ? "border-aws-blue text-aws-blue"
+        : "border-transparent text-muted-2 hover:text-foreground"
     }`;
 
   const tagsCountLabel = tagsLoading ? "…" : String(tags.length);
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center gap-px border-b border-[#e9ebed] bg-[#f2f3f3] px-4">
+      <div className="flex items-center gap-px border-b border-border bg-surface-muted px-4">
         <button
           type="button"
           onClick={() => setActiveTab("details")}
@@ -222,7 +222,7 @@ export function HostedZoneDetailsPanel({ zoneId, onClose }: Props) {
   const empty = zoneId == null;
 
   return (
-    <aside className="flex h-full w-[282px] shrink-0 flex-col overflow-auto border-l border-[#d5dbdb] bg-white text-[14px] leading-5 text-[#0f141a]">
+    <aside className="flex h-full w-[282px] shrink-0 flex-col overflow-auto border-l border-border bg-surface text-[14px] leading-5 text-foreground">
       <PanelHeader
         title={empty ? "0 hosted zone selected" : "Hosted zone details"}
         onClose={onClose}

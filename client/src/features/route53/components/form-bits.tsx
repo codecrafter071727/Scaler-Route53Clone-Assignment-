@@ -1,15 +1,15 @@
 import type { ReactNode } from "react";
 
 const FIELD =
-  "box-border block w-full min-w-0 rounded-[8px] border border-[#7d8998] bg-white text-[14px] leading-5 text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078] focus:border-[#006ce0]";
+  "box-border block w-full min-w-0 rounded-[8px] border border-border-strong bg-input text-[14px] leading-5 text-foreground outline-none placeholder:italic placeholder:text-placeholder focus:border-aws-blue";
 
 export function InfoLink() {
   return (
     <span className="inline-flex items-center gap-2">
-      <span className="h-3 w-px bg-[#d5dbdb]" aria-hidden />
+      <span className="h-3 w-px bg-border" aria-hidden />
       <a
         href="#"
-        className="text-[12px] font-bold leading-4 text-[#006ce0] hover:underline hover:text-[#002b66]"
+        className="text-[12px] font-bold leading-4 text-aws-blue hover:underline hover:text-aws-blue"
       >
         Info
       </a>
@@ -19,7 +19,7 @@ export function InfoLink() {
 
 export function FieldLabel({ children }: { children: ReactNode }) {
   return (
-    <div className="mb-0.5 flex items-center gap-2 text-[14px] font-bold leading-5 text-[#0f141a]">
+    <div className="mb-0.5 flex items-center gap-2 text-[14px] font-bold leading-5 text-foreground">
       <span>{children}</span>
       <InfoLink />
     </div>
@@ -27,7 +27,7 @@ export function FieldLabel({ children }: { children: ReactNode }) {
 }
 
 export function FieldHint({ children }: { children: ReactNode }) {
-  return <p className="mb-1 text-[14px] leading-5 text-[#545b64]">{children}</p>;
+  return <p className="mb-1 text-[14px] leading-5 text-muted-2">{children}</p>;
 }
 
 export function TextInput({

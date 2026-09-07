@@ -198,7 +198,7 @@ export function HostedZonesPropertyFilter({
           {tokens.map((token) => (
             <span
               key={token.id}
-              className="inline-flex max-w-full items-center gap-1 rounded-full border border-[#7d8998] bg-white py-0.5 pl-2.5 pr-1 text-[13px] leading-5 text-[#0f141a]"
+              className="inline-flex max-w-full items-center gap-1 rounded-full border border-border-strong bg-surface py-0.5 pl-2.5 pr-1 text-[13px] leading-5 text-foreground"
             >
               <span className="truncate">
                 <span className="font-bold">
@@ -210,7 +210,7 @@ export function HostedZonesPropertyFilter({
                 type="button"
                 aria-label={`Remove ${token.propertyLabel} filter`}
                 onClick={() => removeToken(token.id)}
-                className="flex h-5 w-5 items-center justify-center rounded-full text-[#545b64] hover:bg-[#eaeded]"
+                className="flex h-5 w-5 items-center justify-center rounded-full text-muted-2 hover:bg-pill-active"
               >
                 <CloseIcon className="h-3 w-3" />
               </button>
@@ -220,14 +220,14 @@ export function HostedZonesPropertyFilter({
       ) : null}
 
       <div
-        className={`relative flex h-8 items-center overflow-hidden rounded-[8px] border bg-white ${
-          open ? "border-[#006ce0]" : "border-[#7d8998]"
+        className={`relative flex h-8 items-center overflow-hidden rounded-[8px] border bg-surface ${
+          open ? "border-aws-blue" : "border-border-strong"
         }`}
       >
-        <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#687078]" />
+        <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-3" />
         <div className="flex min-w-0 flex-1 items-center overflow-hidden py-0 pl-9 pr-2">
           {activeProperty ? (
-            <span className="shrink-0 text-[14px] font-bold leading-5 text-[#0f141a]">
+            <span className="shrink-0 text-[14px] font-bold leading-5 text-foreground">
               {activeProperty.label} {activeProperty.operator}&nbsp;
             </span>
           ) : null}
@@ -247,7 +247,7 @@ export function HostedZonesPropertyFilter({
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={onKeyDown}
-            className="h-8 min-w-0 flex-1 bg-transparent text-[14px] leading-5 text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078]"
+            className="h-8 min-w-0 flex-1 bg-transparent text-[14px] leading-5 text-foreground outline-none placeholder:italic placeholder:text-placeholder"
           />
           {text || activeProperty ? (
             <button
@@ -258,7 +258,7 @@ export function HostedZonesPropertyFilter({
                 setOpen(true);
                 inputRef.current?.focus();
               }}
-              className="ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[#687078] hover:bg-[#eaeded] hover:text-[#0f141a]"
+              className="ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-3 hover:bg-pill-active hover:text-foreground"
             >
               <CloseIcon className="h-3.5 w-3.5" />
             </button>

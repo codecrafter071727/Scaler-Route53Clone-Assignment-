@@ -11,7 +11,7 @@ const rightItems = ["Privacy", "Terms", "Cookie preferences"] as const;
 
 export function ConsoleFooter() {
   return (
-    <footer className="flex h-[34px] shrink-0 items-center justify-between gap-6 bg-[#161d26] px-4 text-[13px] font-normal text-[#f0f1f2]">
+    <footer className="flex h-[34px] shrink-0 items-center justify-between gap-6 bg-chrome px-4 text-[13px] font-normal text-header-fg">
       <ul className="flex h-full min-w-0 items-center gap-x-6">
         {leftItems.map((item) => {
           const Icon = "icon" in item ? item.icon : null;
@@ -19,7 +19,7 @@ export function ConsoleFooter() {
             <li key={item.label} className="flex h-full items-center">
               <a
                 href="#"
-                className="inline-flex h-full items-center gap-1.5 whitespace-nowrap leading-none hover:text-[#539fe5]"
+                className="inline-flex h-full items-center gap-1.5 whitespace-nowrap leading-none hover:text-aws-blue"
               >
                 {Icon ? <Icon className="h-3.5 w-3.5 shrink-0" /> : null}
                 <span className="leading-none">{item.label}</span>
@@ -37,7 +37,7 @@ export function ConsoleFooter() {
           <li key={label} className="flex h-full items-center">
             <a
               href="#"
-              className="inline-flex h-full items-center whitespace-nowrap leading-none hover:text-[#539fe5]"
+              className="inline-flex h-full items-center whitespace-nowrap leading-none hover:text-aws-blue"
             >
               {label}
             </a>

@@ -9,7 +9,7 @@ export function PrimaryBtn({
   href?: string;
 }) {
   const className =
-    "inline-flex h-8 items-center rounded-[20px] border-2 border-[#ff9900] bg-[#ff9900] px-5 text-[14px] font-[700] leading-none text-[#0f141a] hover:border-[#ec7211] hover:bg-[#ec7211]";
+    "inline-flex h-8 items-center rounded-[20px] border-2 border-aws-orange bg-aws-orange px-5 text-[14px] font-[700] leading-none text-on-orange hover:border-aws-orange-hover hover:bg-aws-orange-hover";
   if (href) {
     return (
       <Link href={href} className={className}>
@@ -35,7 +35,7 @@ export function ActionBtn({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#006ce0] bg-white px-4 text-[14px] font-[700] leading-none text-[#006ce0] hover:bg-[#f2f8fd]"
+      className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-blue bg-surface px-4 text-[14px] font-[700] leading-none text-aws-blue hover:bg-info"
     >
       {children}
     </button>
@@ -47,7 +47,7 @@ export function DisabledBtn({ children }: { children: ReactNode }) {
     <button
       type="button"
       disabled
-      className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#aab7b8] bg-white px-4 text-[14px] font-[700] leading-none text-[#545b64] opacity-100 disabled:opacity-100"
+      className="inline-flex h-8 items-center rounded-[20px] border-2 border-disabled-border bg-surface px-4 text-[14px] font-[700] leading-none text-muted-2 opacity-100 disabled:opacity-100"
     >
       {children}
     </button>

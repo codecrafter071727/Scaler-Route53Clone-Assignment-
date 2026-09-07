@@ -11,7 +11,7 @@ export function RecordCreatedFlash({ recordName, onDismiss }: Props) {
   return (
     <div
       role="status"
-      className="mb-4 flex items-start gap-3 rounded-lg bg-[#006ce0] px-4 py-3 text-white"
+      className="mb-4 flex items-start gap-3 rounded-lg bg-aws-blue px-4 py-3 text-white"
     >
       <svg
         className="mt-0.5 h-[18px] w-[18px] shrink-0"

@@ -14,7 +14,7 @@ type SideNavProps = {
 };
 
 const ROW =
-  "grid w-full grid-cols-[20px_minmax(0,1fr)] items-center gap-x-0.5 rounded-sm py-[6px] pr-2 text-left hover:text-[#006ce0]";
+  "grid w-full grid-cols-[20px_minmax(0,1fr)] items-center gap-x-0.5 rounded-sm py-[6px] pr-2 text-left hover:text-aws-blue";
 
 export function SideNav({ onClose }: SideNavProps) {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
@@ -26,17 +26,17 @@ export function SideNav({ onClose }: SideNavProps) {
   }
 
   return (
-    <aside className="flex h-full w-[300px] shrink-0 flex-col border-r border-[#d5dbdb] bg-white text-[14px] leading-5">
-      <div className="group grid grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-x-0.5 pl-2 pr-2 pb-1 pt-3">
+    <aside className="flex h-full w-[300px] shrink-0 flex-col border-r border-border bg-sidebar text-[14px] leading-5">
+      <div className="group grid grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-x-0.5 pb-1 pl-2 pr-2 pt-3">
         <span aria-hidden />
-        <span className="text-[18px] font-bold leading-[22px] text-[#0f141a] group-hover:text-[#006ce0]">
+        <span className="text-[18px] font-bold leading-[22px] text-sidebar-title group-hover:text-aws-blue">
           Route 53
         </span>
         <button
           type="button"
           aria-label="Close side navigation"
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded text-[#545b64] group-hover:text-[#006ce0]"
+          className="flex h-8 w-8 items-center justify-center rounded text-muted-2 group-hover:text-aws-blue"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -62,7 +62,7 @@ export function SideNav({ onClose }: SideNavProps) {
                 type="button"
                 onClick={() => toggleSection(section.title)}
                 aria-expanded={expanded}
-                className={`${ROW} items-center text-[16px] font-bold leading-none text-[#0f141a] hover:text-[#006ce0]`}
+                className={`${ROW} items-center text-[16px] font-bold leading-none text-sidebar-title hover:text-aws-blue`}
               >
                 <span
                   className={`flex h-4 w-5 items-center justify-center transition-transform ${
@@ -86,16 +86,16 @@ export function SideNav({ onClose }: SideNavProps) {
           );
         })}
 
-        <div className="mt-auto border-t border-[#d5dbdb] bg-white pt-6 pb-3">
+        <div className="mt-auto border-t border-border bg-sidebar pb-3 pt-6">
           <ul className="flex flex-col gap-3 pl-[28px] pr-2">
             {footerLinks.map((link) => (
               <li key={link.label}>
                 <a
                   href={link.href ?? "#"}
-                  className="group inline-flex items-center gap-1.5 whitespace-nowrap text-[14px] leading-5 font-normal text-[#424650] hover:text-[#006ce0]"
+                  className="group inline-flex items-center gap-1.5 whitespace-nowrap text-[14px] font-normal leading-5 text-sidebar-text hover:text-aws-blue"
                 >
                   <span>{link.label}</span>
-                  <ExternalLinkIcon className="h-3 w-3 shrink-0 text-[#424650] group-hover:text-[#006ce0]" />
+                  <ExternalLinkIcon className="h-3 w-3 shrink-0 text-sidebar-text group-hover:text-aws-blue" />
                 </a>
               </li>
             ))}
@@ -108,19 +108,19 @@ export function SideNav({ onClose }: SideNavProps) {
 
 function TextRow({ link }: { link: NavLink }) {
   const color = link.active
-    ? "font-bold text-[#006ce0]"
-    : "font-normal text-[#424650]";
+    ? "font-bold text-aws-blue"
+    : "font-normal text-sidebar-text";
 
   return (
     <a
       href={link.href ?? "#"}
-      className={`group ${ROW} text-[14px] ${color} hover:text-[#006ce0]`}
+      className={`group ${ROW} text-[14px] ${color} hover:text-aws-blue`}
     >
       <span aria-hidden />
       <span className="flex min-w-0 items-center gap-1">
         <span className="truncate">{link.label}</span>
         {link.badge === "New" && (
-          <span className="shrink-0 text-[12px] font-normal text-[#006ce0] underline decoration-dashed underline-offset-2">
+          <span className="shrink-0 text-[12px] font-normal text-aws-blue underline decoration-dashed underline-offset-2">
             New
           </span>
         )}

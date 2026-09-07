@@ -11,9 +11,9 @@ type Props = {
   onSwitchToSignUp: () => void;
 };
 
-const fieldLabel = "mb-1 block font-amazon-bold text-[14px] leading-5 text-[#0f141a]";
+const fieldLabel = "mb-1 block font-amazon-bold text-[14px] leading-5 text-foreground";
 const fieldInput =
-  "box-border h-8 w-full rounded-lg border border-[#8c8c94] bg-white px-3 text-[14px] text-[#0f141a] outline-none focus:border-[#006ce0] focus:ring-1 focus:ring-[#006ce0]";
+  "box-border h-8 w-full rounded-lg border border-border-strong bg-surface px-3 text-[14px] text-foreground outline-none focus:border-aws-blue focus:ring-1 focus:ring-aws-blue";
 
 export function SignInForm({ onSuccess, onSwitchToSignUp }: Props) {
   const [identifier, setIdentifier] = useState("");
@@ -69,27 +69,27 @@ export function SignInForm({ onSuccess, onSwitchToSignUp }: Props) {
           className={fieldInput}
         />
         <div className="mt-3 flex items-center justify-between gap-2">
-          <label className="inline-flex cursor-pointer items-center text-[14px] text-[#0f141a]">
+          <label className="inline-flex cursor-pointer items-center text-[14px] text-foreground">
             <input
               type="checkbox"
               checked={showPassword}
               onChange={(e) => setShowPassword(e.target.checked)}
-              className="mr-2 h-4 w-4 shrink-0 accent-[#006ce0]"
+              className="mr-2 h-4 w-4 shrink-0 accent-aws-blue"
             />
             <span>{AUTH_COPY.showPassword}</span>
           </label>
-          <button type="button" className="text-[14px] text-[#006ce0] underline decoration-dashed">
+          <button type="button" className="text-[14px] text-aws-blue underline decoration-dashed">
             {AUTH_COPY.havingTrouble}
           </button>
         </div>
       </div>
 
-      {error ? <p className="text-[13px] text-[#d13212]">{error}</p> : null}
+      {error ? <p className="text-[13px] text-danger">{error}</p> : null}
 
       <button
         type="submit"
         disabled={loading}
-        className="h-8 w-full rounded-full border border-[#ff9900] bg-[#ff9900] font-amazon-bold text-[14px] text-[#0f141a] hover:bg-[#ec7211] disabled:opacity-60"
+        className="h-8 w-full rounded-full border border-aws-orange bg-aws-orange font-amazon-bold text-[14px] text-on-orange hover:bg-aws-orange-hover disabled:opacity-60"
       >
         {loading ? "Signing in…" : AUTH_COPY.signIn}
       </button>
@@ -98,7 +98,7 @@ export function SignInForm({ onSuccess, onSwitchToSignUp }: Props) {
         <button
           type="button"
           onClick={onSwitchToSignUp}
-          className="font-amazon-bold text-[#006ce0] hover:underline"
+          className="font-amazon-bold text-aws-blue hover:underline"
         >
           {AUTH_COPY.createAccount}
         </button>

@@ -43,19 +43,19 @@ export function ExistingRecordsSection({
       <button
         type="button"
         onClick={onToggle}
-        className="flex items-center gap-2 text-[16px] font-bold text-[#0f141a]"
+        className="flex items-center gap-2 text-[16px] font-bold text-foreground"
         aria-expanded={open}
       >
         <Caret open={open} />
         <span>View existing records</span>
       </button>
-      <p className="mt-1 text-[14px] text-[#545b64]">
+      <p className="mt-1 text-[14px] text-muted-2">
         The following table lists the existing records in {domainName}.
       </p>
       {open ? (
-        <div className="mt-3 rounded-2xl border border-[#d5dbdb] bg-white">
+        <div className="mt-3 rounded-2xl border border-border bg-card">
           <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
-            <div className="flex items-center gap-2 text-[18px] font-bold text-[#0f141a]">
+            <div className="flex items-center gap-2 text-[18px] font-bold text-foreground">
               <span>Existing records ({records.length})</span>
               <InfoLink />
             </div>
@@ -63,25 +63,25 @@ export function ExistingRecordsSection({
               type="button"
               aria-label="Refresh records"
               onClick={onRefresh}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#006ce0] bg-white text-[#006ce0]"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-aws-blue bg-surface text-aws-blue"
             >
               <RefreshIcon className="h-[18px] w-[18px]" />
             </button>
           </div>
-          <p className="mt-2 px-5 text-[14px] text-[#0f141a]">
+          <p className="mt-2 px-5 text-[14px] text-foreground">
             Automatic mode is the current search behavior optimized for best
             filter results.{" "}
-            <a href="#" className="text-[#006ce0] underline underline-offset-2">
+            <a href="#" className="text-aws-blue underline underline-offset-2">
               To change modes go to settings.
             </a>
           </p>
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-b border-[#d5dbdb] px-5 pb-3">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 pb-3">
             <div className="relative min-w-[220px] max-w-[420px] flex-1">
-              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#656871]" />
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
               <input
                 aria-label="Filter records by property or value"
                 placeholder="Filter records by property or value"
-                className="h-9 w-full rounded-[8px] border border-[#7d8998] bg-white py-0 pl-9 pr-3 text-[14px] outline-none placeholder:italic placeholder:text-[#656871] focus:border-[#006ce0]"
+                className="h-9 w-full rounded-[8px] border border-border-strong bg-surface py-0 pl-9 pr-3 text-[14px] outline-none placeholder:italic placeholder:text-placeholder focus:border-aws-blue"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -89,10 +89,10 @@ export function ExistingRecordsSection({
                 <button
                   key={label}
                   type="button"
-                  className="inline-flex h-9 items-center gap-1.5 rounded-[8px] border border-[#7d8998] bg-white px-3 text-[14px] font-bold"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-[8px] border border-border-strong bg-surface px-3 text-[14px] font-bold"
                 >
                   {label}
-                  <CaretDown className="h-3 w-3 text-[#006ce0]" />
+                  <CaretDown className="h-3 w-3 text-aws-blue" />
                 </button>
               ))}
               <span className="px-2 text-[15px] font-bold">1</span>
@@ -102,7 +102,7 @@ export function ExistingRecordsSection({
           <div className="overflow-x-auto px-1 pb-2">
             <table className="w-full min-w-[1100px] border-collapse text-left text-[14px]">
               <thead>
-                <tr className="border-b border-[#d5dbdb] bg-[#fafafa]">
+                <tr className="border-b border-border bg-table-hover">
                   <th className="w-10 px-3 py-2.5">
                     <input type="checkbox" aria-label="Select all" />
                   </th>
@@ -110,7 +110,7 @@ export function ExistingRecordsSection({
                     <th key={col} className="px-3 py-2.5">
                       <button
                         type="button"
-                        className="flex w-full items-center justify-between gap-2 bg-transparent p-0 text-[14px] font-bold text-[#424650]"
+                        className="flex w-full items-center justify-between gap-2 bg-transparent p-0 text-[14px] font-bold text-sidebar-text"
                       >
                         <span className="truncate">{col}</span>
                         <SortIcon className="h-2 w-2.5 shrink-0" />
@@ -121,7 +121,7 @@ export function ExistingRecordsSection({
               </thead>
               <tbody>
                 {records.map((record) => (
-                  <tr key={record.id} className="border-b border-[#d5dbdb]">
+                  <tr key={record.id} className="border-b border-border">
                     <td className="px-3 py-2.5 align-top">
                       <input
                         type="checkbox"
@@ -172,7 +172,7 @@ export function ExistingRecordsSection({
 function Caret({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-3 w-3 shrink-0 text-[#0f141a] transition-transform ${
+      className={`h-3 w-3 shrink-0 text-foreground transition-transform ${
         open ? "rotate-90" : ""
       }`}
       viewBox="0 0 10 10"

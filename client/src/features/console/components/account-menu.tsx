@@ -75,14 +75,14 @@ export function AccountMenu() {
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-1 min-w-[160px] overflow-hidden rounded border border-[#3f4754] bg-[#232f3e] py-1 shadow-lg"
+          className="absolute right-0 top-full z-50 mt-1 min-w-[160px] overflow-hidden rounded border border-header-search-border bg-card py-1 shadow-lg"
         >
           <button
             type="button"
             role="menuitem"
             disabled={loading}
             onClick={handleLogout}
-            className="block w-full px-3 py-2 text-left text-[13px] text-[#d1d5db] hover:bg-white/10 disabled:opacity-60"
+            className="block w-full px-3 py-2 text-left text-[13px] text-header-fg hover:bg-white/10 disabled:opacity-60"
           >
             {loading ? "Signing out…" : "Logout"}
           </button>

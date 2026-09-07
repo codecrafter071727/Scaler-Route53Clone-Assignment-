@@ -15,19 +15,19 @@ export function AccountCreatedPopup({ open, message, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="account-created-title"
-        className="w-full max-w-sm rounded-xl border border-[#c6c6cd] bg-white p-5 shadow-lg"
+        className="w-full max-w-sm rounded-xl border border-border bg-surface p-5 shadow-lg"
       >
         <h2
           id="account-created-title"
-          className="font-amazon-bold text-[18px] text-[#0f141a]"
+          className="font-amazon-bold text-[18px] text-foreground"
         >
           Account created
         </h2>
-        <p className="mt-2 text-[14px] leading-5 text-[#424650]">{message}</p>
+        <p className="mt-2 text-[14px] leading-5 text-sidebar-text">{message}</p>
         <button
           type="button"
           onClick={onClose}
-          className="mt-5 h-8 w-full rounded-full border border-[#ff9900] bg-[#ff9900] font-amazon-bold text-[14px] text-[#0f141a] hover:bg-[#ec7211]"
+          className="mt-5 h-8 w-full rounded-full border border-aws-orange bg-aws-orange font-amazon-bold text-[14px] text-on-orange hover:bg-aws-orange-hover"
         >
           Continue to sign in
         </button>

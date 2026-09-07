@@ -131,7 +131,7 @@ export function EditHostedZoneContent() {
 
   if (loading) {
     return (
-      <main className="min-w-0 flex-1 overflow-auto bg-[#fcfcfd] px-5 pb-8 pt-4 text-[14px] text-[#545b64]">
+      <main className="min-w-0 flex-1 overflow-auto bg-background px-5 pb-8 pt-4 text-[14px] text-muted-2">
         Loading…
       </main>
     );
@@ -139,9 +139,9 @@ export function EditHostedZoneContent() {
 
   if (loadError || !detail) {
     return (
-      <main className="min-w-0 flex-1 overflow-auto bg-[#fcfcfd] px-5 pb-8 pt-4 text-[14px]">
-        <p className="text-[#d13212]">{loadError || "Hosted zone not found."}</p>
-        <Link href="/hostedzones" className="mt-3 inline-block text-[#006ce0] underline">
+      <main className="min-w-0 flex-1 overflow-auto bg-background px-5 pb-8 pt-4 text-[14px]">
+        <p className="text-danger">{loadError || "Hosted zone not found."}</p>
+        <Link href="/hostedzones" className="mt-3 inline-block text-aws-blue underline">
           Back to hosted zones
         </Link>
       </main>
@@ -151,19 +151,19 @@ export function EditHostedZoneContent() {
   const isPrivate = detail.zone_type === "private";
 
   return (
-    <main className="min-w-0 flex-1 overflow-auto bg-[#fcfcfd] px-5 pb-8 pt-4 text-[14px] leading-5 text-[#0f141a]">
+    <main className="min-w-0 flex-1 overflow-auto bg-background px-5 pb-8 pt-4 text-[14px] leading-5 text-foreground">
       <div className="mb-4 flex items-baseline gap-2">
-        <h1 className="text-[28px] font-bold leading-8 text-[#0f141a]">
+        <h1 className="text-[28px] font-bold leading-8 text-foreground">
           Edit {detail.domain_name}
         </h1>
         <InfoLink />
       </div>
 
-      <section className="rounded-2xl border border-[#d5dbdb] bg-white px-5 py-4">
-        <h2 className="text-[18px] font-bold leading-6 text-[#0f141a]">
+      <section className="rounded-2xl border border-border bg-card px-5 py-4">
+        <h2 className="text-[18px] font-bold leading-6 text-foreground">
           Edit hosted zone
         </h2>
-        <p className="mt-1 text-[14px] leading-5 text-[#545b64]">
+        <p className="mt-1 text-[14px] leading-5 text-muted-2">
           A hosted zone is a container that holds information about how you want
           to route traffic for a domain, such as example.com, and its subdomains.
         </p>
@@ -195,7 +195,7 @@ export function EditHostedZoneContent() {
               onChange={setDescription}
               placeholder="The hosted zone is used for..."
             />
-            <div className="mt-1 flex justify-between gap-4 text-[12px] leading-4 text-[#687078]">
+            <div className="mt-1 flex justify-between gap-4 text-[12px] leading-4 text-muted-3">
               <span>The description can have up to {DESC_MAX} characters.</span>
               <span className="shrink-0 tabular-nums">
                 {description.length}/{DESC_MAX}
@@ -211,12 +211,12 @@ export function EditHostedZoneContent() {
 
       <TagsPanel tags={tags} onChange={setTags} />
 
-      {error ? <p className="mt-4 text-[13px] text-[#d13212]">{error}</p> : null}
+      {error ? <p className="mt-4 text-[13px] text-danger">{error}</p> : null}
 
       <div className="mt-6 flex items-center justify-end gap-5">
         <Link
           href={`/hostedzones/${zoneId}`}
-          className="text-[14px] font-bold leading-5 text-[#006ce0] hover:underline"
+          className="text-[14px] font-bold leading-5 text-aws-blue hover:underline"
         >
           Cancel
         </Link>
@@ -224,7 +224,7 @@ export function EditHostedZoneContent() {
           type="button"
           disabled={saving}
           onClick={() => void handleSave()}
-          className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#ff9900] bg-[#ff9900] px-5 text-[14px] font-[700] leading-none text-[#0f141a] hover:border-[#ec7211] hover:bg-[#ec7211] disabled:opacity-60"
+          className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-orange bg-aws-orange px-5 text-[14px] font-[700] leading-none text-on-orange hover:border-aws-orange-hover hover:bg-aws-orange-hover disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save changes"}
         </button>
@@ -236,10 +236,10 @@ export function EditHostedZoneContent() {
 function ReadOnlyField({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="mb-0.5 text-[14px] font-bold leading-5 text-[#0f141a]">
+      <div className="mb-0.5 text-[14px] font-bold leading-5 text-foreground">
         {label}
       </div>
-      <div className="break-all text-[14px] font-normal leading-5 text-[#0f141a]">
+      <div className="break-all text-[14px] font-normal leading-5 text-foreground">
         {value}
       </div>
     </div>

@@ -38,13 +38,13 @@ export function AwsSelect({
         aria-label={ariaLabel}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex h-8 w-full items-center justify-between gap-2 rounded-[8px] border bg-white px-3 text-left text-[14px] leading-5 text-[#0f141a] ${
-          open ? "border-[#006ce0]" : "border-[#7d8998]"
+        className={`flex h-8 w-full items-center justify-between gap-2 rounded-[8px] border bg-input px-3 text-left text-[14px] leading-5 text-foreground ${
+          open ? "border-aws-blue" : "border-border-strong"
         }`}
       >
         <span className="truncate">{selected?.label}</span>
         <CaretDown
-          className={`h-3 w-3 shrink-0 text-[#006ce0] transition-transform ${
+          className={`h-3 w-3 shrink-0 text-aws-blue transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -52,12 +52,12 @@ export function AwsSelect({
       {open ? (
         <ul
           role="listbox"
-          className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-[8px] border border-[#d5dbdb] bg-white py-1 shadow-[0_4px_12px_rgba(0,0,0,0.12)]"
+          className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-[8px] border border-border bg-surface py-1 shadow-[0_4px_12px_rgba(0,0,0,0.12)]"
         >
           {options.map((opt) => {
             const isSelected = opt.value === value;
             return (
-              <li key={opt.value} className="border-b border-[#e9ebed] last:border-b-0">
+              <li key={opt.value} className="border-b border-border last:border-b-0">
                 <button
                   type="button"
                   role="option"
@@ -66,14 +66,14 @@ export function AwsSelect({
                     onChange(opt.value);
                     setOpen(false);
                   }}
-                  className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-[14px] leading-5 text-[#0f141a] hover:bg-[#f2f8fd] ${
-                    isSelected ? "outline outline-2 outline-[#006ce0] -outline-offset-2" : ""
+                  className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-[14px] leading-5 text-foreground hover:bg-info ${
+                    isSelected ? "outline outline-2 outline-outline-row -outline-offset-2" : ""
                   }`}
                 >
                   <span>{opt.label}</span>
                   {isSelected ? (
                     <svg
-                      className="h-4 w-4 shrink-0 text-[#006ce0]"
+                      className="h-4 w-4 shrink-0 text-aws-blue"
                       viewBox="0 0 16 16"
                       fill="none"
                       aria-hidden

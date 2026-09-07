@@ -13,10 +13,10 @@ export type TagRow = {
 const MAX_TAGS = 50;
 
 const BTN =
-  "inline-flex h-8 shrink-0 items-center rounded-[20px] border-2 border-[#006ce0] bg-white px-4 text-[14px] font-bold leading-none text-[#006ce0] hover:bg-[#f2f8fd] disabled:cursor-not-allowed disabled:border-[#aab7b8] disabled:text-[#687078] disabled:hover:bg-white";
+  "inline-flex h-8 shrink-0 items-center rounded-[20px] border-2 border-aws-blue bg-surface px-4 text-[14px] font-bold leading-none text-aws-blue hover:bg-info disabled:cursor-not-allowed disabled:border-disabled-border disabled:text-muted-3 disabled:hover:bg-surface";
 
 const INPUT =
-  "box-border h-8 w-full rounded-[8px] border bg-white py-0 pl-9 pr-3 text-[14px] text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078]";
+  "box-border h-8 w-full rounded-[8px] border bg-input py-0 pl-9 pr-3 text-[14px] text-foreground outline-none placeholder:italic placeholder:text-placeholder";
 
 export function newTagRow(): TagRow {
   return { id: crypto.randomUUID(), keyName: "", value: "" };
@@ -50,17 +50,17 @@ export function TagsPanel({ tags, onChange }: Props) {
   }
 
   return (
-    <section className="mt-3 rounded-2xl border border-[#d5dbdb] bg-white px-5 py-4">
-      <div className="flex items-center gap-2 text-[18px] font-bold leading-6 text-[#0f141a]">
+    <section className="mt-3 rounded-2xl border border-border bg-card px-5 py-4">
+      <div className="flex items-center gap-2 text-[18px] font-bold leading-6 text-foreground">
         <span>Tags</span>
         <InfoLink />
       </div>
-      <p className="mt-1 text-[14px] leading-5 text-[#545b64]">
+      <p className="mt-1 text-[14px] leading-5 text-muted-2">
         Apply tags to hosted zones to help organize and identify them.
       </p>
 
       {tags.length === 0 ? (
-        <p className="mt-3 text-[14px] leading-5 text-[#545b64]">
+        <p className="mt-3 text-[14px] leading-5 text-muted-2">
           No tags associated with the resource.
         </p>
       ) : (
@@ -77,10 +77,10 @@ export function TagsPanel({ tags, onChange }: Props) {
               >
                 <div className="min-w-0">
                   {index === 0 && (
-                    <div className="mb-1 text-[14px] font-bold leading-5 text-[#0f141a]">Key</div>
+                    <div className="mb-1 text-[14px] font-bold leading-5 text-foreground">Key</div>
                   )}
                   <div className="relative">
-                    <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#656871]" />
+                    <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
                     <input
                       aria-label="Tag key"
                       aria-invalid={showError}
@@ -92,14 +92,14 @@ export function TagsPanel({ tags, onChange }: Props) {
                       placeholder="Enter key"
                       className={`${INPUT} ${
                         showError
-                          ? "border-[#d91515] focus:border-[#d91515]"
-                          : "border-[#7d8998] focus:border-[#006ce0]"
+                          ? "border-danger focus:border-danger"
+                          : "border-border-strong focus:border-aws-blue"
                       }`}
                     />
                   </div>
                   {showError && (
-                    <p className="mt-1 flex items-center gap-1.5 text-[12px] font-bold leading-4 text-[#d91515]">
-                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#d91515] text-white">
+                    <p className="mt-1 flex items-center gap-1.5 text-[12px] font-bold leading-4 text-danger">
+                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-danger text-white">
                         <CloseIcon className="h-2 w-2" />
                       </span>
                       Key is empty.
@@ -109,18 +109,18 @@ export function TagsPanel({ tags, onChange }: Props) {
 
                 <div className="min-w-0">
                   {index === 0 && (
-                    <div className="mb-1 text-[14px] font-bold leading-5 text-[#0f141a]">
+                    <div className="mb-1 text-[14px] font-bold leading-5 text-foreground">
                       Value - <span className="italic">optional</span>
                     </div>
                   )}
                   <div className="relative">
-                    <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#656871]" />
+                    <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
                     <input
                       aria-label="Tag value"
                       value={tag.value}
                       onChange={(e) => updateTag(tag.id, { value: e.target.value })}
                       placeholder="Enter value"
-                      className={`${INPUT} border-[#7d8998] focus:border-[#006ce0]`}
+                      className={`${INPUT} border-border-strong focus:border-aws-blue`}
                     />
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export function TagsPanel({ tags, onChange }: Props) {
       >
         Add tag
       </button>
-      <p className="mt-2 text-[12px] leading-4 text-[#687078]">
+      <p className="mt-2 text-[12px] leading-4 text-muted-3">
         You can add up to {remaining} more tag{remaining === 1 ? "" : "s"}.
       </p>
     </section>

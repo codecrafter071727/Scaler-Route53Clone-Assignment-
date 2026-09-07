@@ -33,7 +33,7 @@ export function RequireAuth({ children }: Props) {
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f2f3f3] text-[14px] text-[#424650]">
+      <div className="flex min-h-screen items-center justify-center bg-surface-muted text-[14px] text-sidebar-text">
         Checking session…
       </div>
     );

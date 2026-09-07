@@ -18,8 +18,8 @@ type Props = {
 };
 
 const optionClass = (active: boolean) =>
-  `mx-1 block w-[calc(100%-8px)] rounded-lg px-3 py-2 text-left text-[14px] leading-5 text-[#0f141a] ${
-    active ? "bg-[#eaeded]" : "bg-transparent hover:bg-[#f2f3f3]"
+  `mx-1 block w-[calc(100%-8px)] rounded-lg px-3 py-2 text-left text-[14px] leading-5 text-foreground ${
+    active ? "bg-pill-active" : "bg-transparent hover:bg-surface-muted"
   }`;
 
 export function PropertyFilterDropdown({
@@ -40,15 +40,15 @@ export function PropertyFilterDropdown({
     <div
       id={listId}
       role="listbox"
-      className="absolute z-30 mt-1 max-h-[320px] w-full overflow-auto rounded-[8px] border border-[#d5dbdb] bg-white py-1 shadow-[0_5px_15px_rgba(0,28,36,0.15)]"
+      className="absolute z-30 mt-1 max-h-[320px] w-full overflow-auto rounded-[8px] border border-border bg-surface py-1 shadow-[0_5px_15px_rgba(0,28,36,0.15)]"
     >
       {mode === "properties" ? (
         <>
-          <div className="px-4 pb-1 pt-2 text-[14px] font-bold leading-5 text-[#0f141a]">
+          <div className="px-4 pb-1 pt-2 text-[14px] font-bold leading-5 text-foreground">
             Properties
           </div>
           {properties.length === 0 ? (
-            <p className="px-4 py-2 text-[14px] text-[#545b64]">
+            <p className="px-4 py-2 text-[14px] text-muted-2">
               No matching properties
             </p>
           ) : (
@@ -84,13 +84,13 @@ export function PropertyFilterDropdown({
               {text ? ` ${text}` : ""}
             </button>
           </div>
-          <div className="px-4 pb-1 pt-1 text-[14px] font-bold leading-5 text-[#0f141a]">
+          <div className="px-4 pb-1 pt-1 text-[14px] font-bold leading-5 text-foreground">
             values
           </div>
           {valuesLoading ? (
-            <p className="px-4 py-2 text-[14px] text-[#545b64]">Loading…</p>
+            <p className="px-4 py-2 text-[14px] text-muted-2">Loading…</p>
           ) : values.length === 0 ? (
-            <p className="px-4 py-2 text-[14px] text-[#545b64]">
+            <p className="px-4 py-2 text-[14px] text-muted-2">
               No matching values
             </p>
           ) : (

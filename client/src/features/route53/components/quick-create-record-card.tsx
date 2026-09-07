@@ -18,7 +18,7 @@ type Props = {
 };
 
 const FIELD =
-  "box-border block w-full min-w-0 rounded-[8px] border border-[#7d8998] bg-white text-[14px] leading-5 text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078] focus:border-[#006ce0]";
+  "box-border block w-full min-w-0 rounded-[8px] border border-border-strong bg-input text-[14px] leading-5 text-foreground outline-none placeholder:italic placeholder:text-placeholder focus:border-aws-blue";
 
 export function QuickCreateRecordCard({
   index,
@@ -35,12 +35,12 @@ export function QuickCreateRecordCard({
   }
 
   return (
-    <div className="border-t border-[#d5dbdb] pt-4 first:border-t-0 first:pt-0">
+    <div className="border-t border-border pt-4 first:border-t-0 first:pt-0">
       <div className="flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => patch({ open: !draft.open })}
-          className="flex items-center gap-2 text-[16px] font-bold leading-5 text-[#0f141a]"
+          className="flex items-center gap-2 text-[16px] font-bold leading-5 text-foreground"
           aria-expanded={draft.open}
         >
           <Caret open={draft.open} />
@@ -50,7 +50,7 @@ export function QuickCreateRecordCard({
           type="button"
           disabled={!canDelete}
           onClick={onDelete}
-          className="inline-flex h-8 items-center rounded-[20px] border border-[#7d8998] bg-white px-4 text-[14px] font-bold text-[#0f141a] hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:border-[#d5dbdb] disabled:text-[#687078]"
+          className="inline-flex h-8 items-center rounded-[20px] border border-border-strong bg-surface px-4 text-[14px] font-bold text-foreground hover:bg-table-hover disabled:cursor-not-allowed disabled:border-border disabled:text-muted-3"
         >
           Delete
         </button>
@@ -68,11 +68,11 @@ export function QuickCreateRecordCard({
                 placeholder="subdomain"
                 className={`${FIELD} h-8 min-w-0 flex-1 px-3`}
               />
-              <span className="shrink-0 text-[14px] text-[#0f141a]">
+              <span className="shrink-0 text-[14px] text-foreground">
                 .{suffix}
               </span>
             </div>
-            <p className="mt-1 text-[14px] leading-5 text-[#545b64]">
+            <p className="mt-1 text-[14px] leading-5 text-muted-2">
               Keep blank to create a record for the root domain.
             </p>
           </div>
@@ -93,7 +93,7 @@ export function QuickCreateRecordCard({
                 checked={draft.alias}
                 onChange={(alias) => patch({ alias })}
               />
-              <span className="text-[14px] font-normal leading-5 text-[#16191f]">
+              <span className="text-[14px] font-normal leading-5 text-foreground">
                 Alias
               </span>
             </div>
@@ -171,7 +171,7 @@ export function QuickCreateRecordCard({
                   rows={4}
                   className={`${FIELD} min-h-[96px] resize-y px-3 py-2`}
                 />
-                <p className="mt-1 text-[14px] leading-5 text-[#545b64]">
+                <p className="mt-1 text-[14px] leading-5 text-muted-2">
                   Enter multiple values on separate lines.
                 </p>
               </div>
@@ -194,13 +194,13 @@ export function QuickCreateRecordCard({
                       key={preset.label}
                       type="button"
                       onClick={() => patch({ ttl: preset.seconds })}
-                      className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#006ce0] bg-white px-3.5 text-[14px] font-bold text-[#006ce0] hover:bg-[#f2f8fd]"
+                      className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-blue bg-surface px-3.5 text-[14px] font-bold text-aws-blue hover:bg-info"
                     >
                       {preset.label}
                     </button>
                   ))}
                 </div>
-                <p className="mt-1 text-[14px] leading-5 text-[#545b64]">
+                <p className="mt-1 text-[14px] leading-5 text-muted-2">
                   Recommended values: 60 to 172800 (two days)
                 </p>
               </div>
@@ -237,11 +237,11 @@ function AliasToggle({
       aria-label="Alias"
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-4 w-8 shrink-0 items-center rounded-full p-[2px] transition-colors ${
-        checked ? "bg-[#006ce0]" : "bg-[#545b64]"
+        checked ? "bg-aws-blue" : "bg-muted-2"
       }`}
     >
       <span
-        className={`block h-3 w-3 rounded-full bg-white transition-transform duration-150 ease-out ${
+        className={`block h-3 w-3 rounded-full bg-surface transition-transform duration-150 ease-out ${
           checked ? "translate-x-4" : "translate-x-0"
         }`}
       />
@@ -252,7 +252,7 @@ function AliasToggle({
 function Caret({ open }: { open: boolean }) {
   return (
     <svg
-      className={`h-2.5 w-2.5 shrink-0 text-[#0f141a] transition-transform ${
+      className={`h-2.5 w-2.5 shrink-0 text-foreground transition-transform ${
         open ? "" : "-rotate-90"
       }`}
       viewBox="0 0 10 10"

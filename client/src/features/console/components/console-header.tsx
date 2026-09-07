@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   BellIcon,
   GridIcon,
@@ -7,11 +9,12 @@ import {
   SettingsIcon,
   TerminalIcon,
 } from "@/shared/icons";
+import { useTheme, type Theme } from "@/features/theme";
 import { AccountMenu } from "./account-menu";
 
 export function ConsoleHeader() {
   return (
-    <header className="flex h-10 shrink-0 items-center gap-2 bg-[#161d26] px-3 text-[13px] text-[#d1d5db]">
+    <header className="flex h-11 shrink-0 items-center gap-2 border-b border-header-search-border bg-chrome px-3 text-[13px] text-header-fg">
       <span
         role="img"
         aria-label="AWS"
@@ -29,18 +32,18 @@ export function ConsoleHeader() {
       />
       <button
         type="button"
-        className="flex h-8 w-8 items-center justify-center rounded text-[#d1d5db] hover:bg-white/10"
+        className="flex h-8 w-8 items-center justify-center rounded text-header-fg hover:bg-white/10"
         aria-label="Services"
       >
         <GridIcon className="h-[18px] w-[18px]" />
       </button>
 
-      <div className="relative ml-1 flex h-8 min-w-0 flex-1 max-w-[520px] items-center">
+      <div className="relative ml-1 flex h-8 min-w-0 max-w-[520px] flex-1 items-center">
         <SearchIcon className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-[#9ca3af]" />
         <input
           type="search"
           placeholder="Search"
-          className="h-8 w-full rounded border border-[#3f4754] bg-[#0f141a] py-0 pl-8 pr-16 text-[13px] text-white outline-none placeholder:text-[#9ca3af] focus:border-[#539fe5]"
+          className="h-8 w-full rounded border border-header-search-border bg-header-search py-0 pl-8 pr-16 text-[13px] text-white outline-none placeholder:text-[#9ca3af] focus:border-[#539fe5]"
         />
         <span className="pointer-events-none absolute right-2 rounded border border-[#4b5563] px-1.5 py-0.5 text-[11px] text-[#9ca3af]">
           [Alt+S]
@@ -57,9 +60,7 @@ export function ConsoleHeader() {
         <IconBtn label="Support">
           <HelpIcon />
         </IconBtn>
-        <IconBtn label="Settings">
-          <SettingsIcon />
-        </IconBtn>
+        <SettingsMenu />
         <button
           type="button"
           className="ml-1 flex h-8 items-center gap-1 rounded px-2 hover:bg-white/10"
@@ -70,6 +71,94 @@ export function ConsoleHeader() {
         <AccountMenu />
       </div>
     </header>
+  );
+}
+
+function SettingsMenu() {
+  const { theme, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDocClick(e: MouseEvent) {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  function pick(next: Theme) {
+    setTheme(next);
+    setOpen(false);
+  }
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        aria-label="Settings"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => setOpen((v) => !v)}
+        className="flex h-8 w-8 items-center justify-center rounded hover:bg-white/10"
+      >
+        <SettingsIcon />
+      </button>
+      {open ? (
+        <div
+          role="menu"
+          aria-label="Settings"
+          className="absolute right-0 top-full z-50 mt-1 w-52 overflow-hidden rounded-md border border-border bg-card py-1 text-[13px] text-foreground shadow-lg"
+        >
+          <div className="border-b border-border px-3 py-2 text-[12px] font-bold text-muted">
+            Appearance
+          </div>
+          <ThemeOption
+            label="Light"
+            selected={theme === "light"}
+            onSelect={() => pick("light")}
+          />
+          <ThemeOption
+            label="Dark"
+            selected={theme === "dark"}
+            onSelect={() => pick("dark")}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ThemeOption({
+  label,
+  selected,
+  onSelect,
+}: {
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="menuitemradio"
+      aria-checked={selected}
+      onClick={onSelect}
+      className={`flex w-full items-center justify-between px-3 py-2 text-left hover:bg-table-hover ${
+        selected ? "font-bold text-aws-blue" : "text-foreground"
+      }`}
+    >
+      <span>{label}</span>
+      {selected ? <span aria-hidden>✓</span> : null}
+    </button>
   );
 }
 

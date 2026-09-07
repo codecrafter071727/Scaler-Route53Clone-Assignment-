@@ -135,7 +135,7 @@ export function CreateRecordContent() {
 
   if (loading) {
     return (
-      <main className="min-w-0 flex-1 overflow-auto bg-white px-6 pb-8 pt-5 text-[14px] text-[#545b64]">
+      <main className="min-w-0 flex-1 overflow-auto bg-background px-6 pb-8 pt-5 text-[14px] text-muted-2">
         Loading…
       </main>
     );
@@ -143,9 +143,9 @@ export function CreateRecordContent() {
 
   if (error || !zone) {
     return (
-      <main className="min-w-0 flex-1 overflow-auto bg-white px-6 pb-8 pt-5 text-[14px]">
-        <p className="text-[#d13212]">{error || "Hosted zone not found."}</p>
-        <Link href="/hostedzones" className="mt-3 inline-block text-[#006ce0] underline">
+      <main className="min-w-0 flex-1 overflow-auto bg-background px-6 pb-8 pt-5 text-[14px]">
+        <p className="text-danger">{error || "Hosted zone not found."}</p>
+        <Link href="/hostedzones" className="mt-3 inline-block text-aws-blue underline">
           Back to hosted zones
         </Link>
       </main>
@@ -153,38 +153,38 @@ export function CreateRecordContent() {
   }
 
   return (
-    <main className="relative min-w-0 flex-1 overflow-auto bg-white px-6 pb-10 pt-5 text-[14px] leading-5 text-[#0f141a]">
+    <main className="relative min-w-0 flex-1 overflow-auto bg-background px-6 pb-10 pt-5 text-[14px] leading-5 text-foreground">
       {saving ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/70"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
           role="status"
           aria-live="polite"
           aria-label="Creating records"
         >
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-[#d5dbdb] bg-white px-8 py-6 shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-surface px-8 py-6 shadow-[0_4px_16px_rgba(0,0,0,0.12)]">
             <span
-              className="h-8 w-8 animate-spin rounded-full border-[3px] border-[#d5dbdb] border-t-[#006ce0]"
+              className="h-8 w-8 animate-spin rounded-full border-[3px] border-border border-t-aws-blue"
               aria-hidden
             />
-            <p className="text-[14px] font-bold text-[#0f141a]">
+            <p className="text-[14px] font-bold text-foreground">
               Creating records…
             </p>
           </div>
         </div>
       ) : null}
       <div className="mb-4 flex items-baseline gap-2">
-        <h1 className="text-[28px] font-bold leading-8 text-[#0f141a]">
+        <h1 className="text-[28px] font-bold leading-8 text-foreground">
           Create record
         </h1>
         <InfoLink />
       </div>
 
-      <section className="rounded-2xl border border-[#d5dbdb] bg-white px-5 py-4">
+      <section className="rounded-2xl border border-border bg-card px-5 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-[18px] font-bold leading-6 text-[#0f141a]">
+          <h2 className="text-[18px] font-bold leading-6 text-foreground">
             Quick create record
           </h2>
-          <a href="#" className="text-[14px] font-bold text-[#006ce0] hover:underline">
+          <a href="#" className="text-[14px] font-bold text-aws-blue hover:underline">
             Switch to wizard
           </a>
         </div>
@@ -215,13 +215,13 @@ export function CreateRecordContent() {
       </section>
 
       {submitError ? (
-        <p className="mt-4 text-[14px] text-[#d13212]">{submitError}</p>
+        <p className="mt-4 text-[14px] text-danger">{submitError}</p>
       ) : null}
 
       <div className="mt-5 flex flex-wrap items-center justify-end gap-4">
         <Link
           href={`/hostedzones/${zoneId}`}
-          className="text-[14px] font-bold text-[#006ce0] hover:underline"
+          className="text-[14px] font-bold text-aws-blue hover:underline"
         >
           Cancel
         </Link>
@@ -229,7 +229,7 @@ export function CreateRecordContent() {
           type="button"
           disabled={saving}
           onClick={() => void handleCreate()}
-          className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#ff9900] bg-[#ff9900] px-5 text-[14px] font-[700] leading-none text-[#0f141a] hover:border-[#ec7211] hover:bg-[#ec7211] disabled:opacity-60"
+          className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-orange bg-aws-orange px-5 text-[14px] font-[700] leading-none text-on-orange hover:border-aws-orange-hover hover:bg-aws-orange-hover disabled:opacity-60"
         >
           {saving ? "Creating…" : "Create records"}
         </button>
@@ -257,7 +257,7 @@ function OutlineBtn({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#006ce0] bg-white px-4 text-[14px] font-[700] leading-none text-[#006ce0] hover:bg-[#f2f8fd]"
+      className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-blue bg-surface px-4 text-[14px] font-[700] leading-none text-aws-blue hover:bg-info"
     >
       {children}
     </button>
