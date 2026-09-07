@@ -1,0 +1,43 @@
+---
+description: Modular, reusable code — max 300 lines per file, no unnecessary code
+alwaysApply: true
+---
+
+# Modular & Reusable Code
+
+## Hard limits
+
+- **Max 300 lines per file.** If a file approaches 300 lines, split it before adding more.
+- Write only what is needed for the current feature. No speculative helpers, unused props, dead comments, or over-abstraction.
+
+## Modularity
+
+- One clear responsibility per file (route, model, schema, UI component, hook, util).
+- Prefer small modules over large “god” files.
+- Split by layer: `routes` / `services` / `models` / `schemas` (server); `components` / `hooks` / `lib` (client).
+- Extract shared logic into reusable modules instead of duplicating.
+
+## Reuse first
+
+- Before writing new code, check existing modules for something to reuse or extend.
+- Shared UI → components; shared logic → hooks/utils; shared API types → shared schemas or types.
+- Do not copy-paste blocks across files — extract and import.
+
+## Keep it lean
+
+- No wrappers that only pass through without adding value.
+- No premature abstractions for one-time use.
+- Prefer composition over deep inheritance or mega config objects.
+
+## When splitting a file
+
+```text
+# ❌ growing into one big file
+app/main.py          # routes + models + schemas + db all together
+
+# ✅ split by concern
+app/models/item.py
+app/schemas/item.py
+app/routers/items.py
+app/services/items.py
+```
