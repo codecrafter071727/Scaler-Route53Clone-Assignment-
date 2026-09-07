@@ -171,7 +171,11 @@ export function HostedZoneDetailContent() {
             <CaretIcon open={detailsOpen} />
             <span>Hosted zone details</span>
           </button>
-          <OutlineBtn>Edit hosted zone</OutlineBtn>
+          <OutlineBtn
+            onClick={() => router.push(`/hostedzones/${zoneId}/edit`)}
+          >
+            Edit hosted zone
+          </OutlineBtn>
         </div>
         {detailsOpen ? (
           <div className="grid gap-4 border-t border-[#d5dbdb] px-4 py-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -281,14 +285,17 @@ function DetailItem({ label, value }: { label: string; value: string }) {
 function OutlineBtn({
   children,
   disabled,
+  onClick,
 }: {
   children: ReactNode;
   disabled?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <button
       type="button"
       disabled={disabled}
+      onClick={onClick}
       className="inline-flex h-8 items-center rounded-[20px] border-2 border-[#006ce0] bg-white px-4 text-[14px] font-[700] leading-none text-[#006ce0] hover:bg-[#f2f8fd] disabled:cursor-not-allowed disabled:border-[#aab7b8] disabled:text-[#545b64] disabled:hover:bg-white"
     >
       {children}

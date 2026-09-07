@@ -61,6 +61,27 @@ class HostedZoneCreate(BaseModel):
         return self
 
 
+class HostedZoneUpdate(BaseModel):
+    description: str = Field(default="", max_length=256)
+    vpcs: list[VpcAssociation] = Field(default_factory=list)
+    tags: list[TagItem] = Field(default_factory=list, max_length=50)
+
+    @field_validator("description")
+    @classmethod
+    def description_trim(cls, value: str) -> str:
+        return value.strip()
+
+    @model_validator(mode="after")
+    def validate_addons(self) -> "HostedZoneUpdate":
+        filled = [v for v in self.vpcs if v.region and v.vpc_id]
+        vpc_ids = [v.vpc_id.lower() for v in filled]
+        if len(vpc_ids) != len(set(vpc_ids)):
+            raise ValueError("Each VPC ID must be unique")
+        self.vpcs = filled
+        self.tags = [t for t in self.tags if t.key]
+        return self
+
+
 class HostedZoneRead(BaseModel):
     id: int
     hosted_zone_id: str

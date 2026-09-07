@@ -51,6 +51,24 @@ function crumbsForPath(
     };
   }
 
+  const editMatch = pathname.match(/^\/hostedzones\/(\d+)\/edit\/?$/);
+  if (editMatch) {
+    const zoneId = editMatch[1];
+    return {
+      showBreadcrumbInfo: true,
+      showSplitTools: false,
+      crumbs: [
+        { label: "Route 53", href: "/hostedzones" },
+        { label: "Hosted zones", href: "/hostedzones" },
+        {
+          label: domainName || "Hosted zone",
+          href: `/hostedzones/${zoneId}`,
+        },
+        { label: "Edit" },
+      ],
+    };
+  }
+
   const detailMatch = pathname.match(/^\/hostedzones\/(\d+)\/?$/);
   if (detailMatch) {
     return {
@@ -80,7 +98,9 @@ export function HostedZonesShell({ children }: Props) {
   const [domainName, setDomainName] = useState("");
 
   useEffect(() => {
-    const match = pathname.match(/^\/hostedzones\/(\d+)(?:\/create-record)?\/?$/);
+    const match = pathname.match(
+      /^\/hostedzones\/(\d+)(?:\/(?:create-record|edit))?\/?$/,
+    );
     if (!match) {
       setDomainName("");
       return;

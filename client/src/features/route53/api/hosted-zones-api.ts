@@ -121,6 +121,23 @@ export async function createRecordSet(
   return data;
 }
 
+export type HostedZoneUpdatePayload = {
+  description: string;
+  vpcs: { region: string; vpc_id: string }[];
+  tags: { key: string; value: string }[];
+};
+
+export async function updateHostedZone(
+  id: number,
+  payload: HostedZoneUpdatePayload,
+) {
+  const { data } = await api.patch<HostedZoneDetail>(
+    `${API_PREFIX}/hosted-zones/${id}`,
+    payload,
+  );
+  return data;
+}
+
 export async function createHostedZone(payload: HostedZoneCreatePayload) {
   const { data } = await api.post<HostedZoneDetail>(
     `${API_PREFIX}/hosted-zones`,

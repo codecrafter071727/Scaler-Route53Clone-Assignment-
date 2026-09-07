@@ -6,7 +6,7 @@ from sqlalchemy import String, cast, or_
 from sqlalchemy.orm import Query, Session
 
 from app.models import HostedZone, User
-from app.schemas.hosted_zone import HostedZoneCreate
+from app.schemas.hosted_zone import HostedZoneCreate, HostedZoneUpdate
 from app.services import record_sets as record_service
 
 
@@ -173,6 +173,29 @@ def get_hosted_zone_for_user(db: Session, user: User, zone_pk: int) -> HostedZon
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Hosted zone not found",
         )
+    return zone
+
+
+def update_hosted_zone(
+    db: Session, user: User, zone_pk: int, payload: HostedZoneUpdate
+) -> HostedZone:
+    zone = get_hosted_zone_for_user(db, user, zone_pk)
+
+    if zone.zone_type == "private" and len(payload.vpcs) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Private hosted zones require at least one VPC with region and VPC ID",
+        )
+
+    zone.description = payload.description
+    zone.tags = [t.model_dump() for t in payload.tags]
+    if zone.zone_type == "private":
+        zone.vpcs = [v.model_dump() for v in payload.vpcs]
+    else:
+        zone.vpcs = []
+
+    db.commit()
+    db.refresh(zone)
     return zone
 
 

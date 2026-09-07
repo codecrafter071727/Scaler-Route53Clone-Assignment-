@@ -127,12 +127,22 @@ export function VpcAssociationPanel({ rows, onChange }: Props) {
                   value={row.vpcId}
                   onChange={(e) => updateRow(row.id, { vpcId: e.target.value })}
                   placeholder="Choose VPC"
-                  className={`box-border h-8 w-full rounded-[8px] border bg-white py-0 pl-9 pr-3 text-[14px] text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078] ${
+                  className={`box-border h-8 w-full rounded-[8px] border bg-white py-0 pl-9 pr-9 text-[14px] text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078] ${
                     isDuplicate
                       ? "border-[#d91515] focus:border-[#d91515]"
                       : "border-[#7d8998] focus:border-[#006ce0]"
                   }`}
                 />
+                {row.vpcId ? (
+                  <button
+                    type="button"
+                    aria-label="Clear VPC ID"
+                    onClick={() => updateRow(row.id, { vpcId: "" })}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#006ce0] hover:text-[#002b66]"
+                  >
+                    <CloseIcon className="h-3.5 w-3.5" />
+                  </button>
+                ) : null}
               </div>
               {isDuplicate ? (
                 <p className="mt-1 text-[12px] font-bold leading-4 text-[#d91515]">

@@ -98,7 +98,11 @@ export function HostedZonesContent() {
                 <ActionBtn onClick={() => openZoneDetails(selectedId)}>
                   View details
                 </ActionBtn>
-                <ActionBtn onClick={() => undefined}>Edit</ActionBtn>
+                <ActionBtn
+                  onClick={() => router.push(`/hostedzones/${selectedId}/edit`)}
+                >
+                  Edit
+                </ActionBtn>
                 <ActionBtn onClick={() => undefined}>Delete</ActionBtn>
               </>
             ) : (

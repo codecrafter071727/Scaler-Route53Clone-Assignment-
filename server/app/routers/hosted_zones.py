@@ -8,6 +8,7 @@ from app.schemas.hosted_zone import (
     HostedZoneCreate,
     HostedZoneListItem,
     HostedZoneRead,
+    HostedZoneUpdate,
     TagItem,
 )
 from app.schemas.record_set import RecordSetCreate, RecordSetRead
@@ -103,4 +104,15 @@ def get_zone(
     user: User = Depends(get_current_user),
 ) -> HostedZoneRead:
     zone = zone_service.get_hosted_zone_for_user(db, user, zone_id)
+    return HostedZoneRead.model_validate(zone)
+
+
+@router.patch("/{zone_id}", response_model=HostedZoneRead)
+def update_zone(
+    zone_id: int,
+    payload: HostedZoneUpdate,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> HostedZoneRead:
+    zone = zone_service.update_hosted_zone(db, user, zone_id, payload)
     return HostedZoneRead.model_validate(zone)
