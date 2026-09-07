@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getMe } from "@/features/auth/api/auth-api";
 import { AccountCreatedDialog } from "./account-created-dialog";
 import { AuthBanner } from "./auth-banner";
 import { AuthCard } from "./auth-card";
@@ -21,14 +22,39 @@ export function AuthPage() {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>("signin");
   const [showCreated, setShowCreated] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    getMe()
+      .then(() => {
+        // Already signed in — hosted zones is the app home
+        if (active) router.replace(afterAuthPath);
+      })
+      .catch(() => {
+        if (active) setCheckingSession(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [router]);
 
   function handleSignInSuccess() {
-    router.push(afterAuthPath);
+    // Replace so browser Back does not return to sign-in
+    router.replace(afterAuthPath);
   }
 
   function handleSignUpSuccess() {
     setShowCreated(true);
     setMode("signin");
+  }
+
+  if (checkingSession) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f2f3f3] text-[14px] text-[#424650]">
+        Checking session…
+      </div>
+    );
   }
 
   return (

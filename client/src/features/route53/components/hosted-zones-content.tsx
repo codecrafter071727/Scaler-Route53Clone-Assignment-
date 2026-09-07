@@ -1,5 +1,12 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import {
+  listHostedZones,
+  type HostedZoneListItem,
+} from "@/features/route53/api/hosted-zones-api";
 import { tableColumns } from "@/features/route53/data/nav-data";
 import {
   RefreshIcon,
@@ -9,17 +16,40 @@ import {
 } from "@/shared/icons";
 
 export function HostedZonesContent() {
+  const [zones, setZones] = useState<HostedZoneListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await listHostedZones();
+      setZones(data);
+    } catch {
+      setError("Unable to load hosted zones.");
+      setZones([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
   return (
     <main className="min-w-0 flex-1 overflow-auto bg-white px-6 pb-4 pt-5 text-[14px] leading-5 text-[#0f141a]">
-      {/* Title + actions */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <h1 className="text-[24px] font-bold leading-8 text-[#0f141a]">
-          Hosted zones <span className="font-normal text-[#656871]">(0)</span>
+          Hosted zones{" "}
+          <span className="font-normal text-[#656871]">({zones.length})</span>
         </h1>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             aria-label="Refresh hosted zones"
+            onClick={() => void load()}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[#006ce0] bg-white text-[#006ce0]"
           >
             <RefreshIcon className="h-[18px] w-[18px]" />
@@ -38,7 +68,6 @@ export function HostedZonesContent() {
         </a>
       </p>
 
-      {/* Filter + pagination */}
       <div className="mb-0 flex items-center justify-between gap-6 border-b border-[#d5dbdb] pb-3">
         <div className="relative w-full max-w-[640px]">
           <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#656871]" />
@@ -79,7 +108,8 @@ export function HostedZonesContent() {
         </div>
       </div>
 
-      {/* Table */}
+      {error ? <p className="mt-3 text-[13px] text-[#d13212]">{error}</p> : null}
+
       <div className="overflow-x-auto">
         <table className="w-full min-w-[960px] border-collapse text-left">
           <thead>
@@ -109,24 +139,50 @@ export function HostedZonesContent() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colSpan={7} className="bg-white p-0">
-                <div className="flex w-full flex-col items-center px-6 pt-10 pb-12">
-                  <div className="text-[16px] font-bold leading-5 text-[#545b64]">
-                    No hosted zones
+            {loading ? (
+              <tr>
+                <td colSpan={7} className="px-6 py-10 text-center text-[#545b64]">
+                  Loading hosted zones…
+                </td>
+              </tr>
+            ) : zones.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="bg-white p-0">
+                  <div className="flex w-full flex-col items-center px-6 pt-10 pb-12">
+                    <div className="text-[16px] font-bold leading-5 text-[#545b64]">
+                      No hosted zones
+                    </div>
+                    <div className="mt-1.5 text-center text-[13px] font-normal leading-5 text-[#687078]">
+                      There are no hosted zones created for this account.
+                    </div>
+                    <Link
+                      href="/hostedzones/create"
+                      className="mt-4 inline-flex h-8 items-center rounded-[20px] border-2 border-[#ff9900] bg-[#ff9900] px-5 text-[14px] font-bold leading-none text-[#0f141a] hover:border-[#ec7211] hover:bg-[#ec7211]"
+                    >
+                      Create hosted zone
+                    </Link>
                   </div>
-                  <div className="mt-1.5 text-center text-[13px] font-normal leading-5 text-[#687078]">
-                    There are no hosted zones created for this account.
-                  </div>
-                  <Link
-                    href="/hostedzones/create"
-                    className="mt-4 inline-flex h-8 items-center rounded-[20px] border-2 border-[#ff9900] bg-[#ff9900] px-5 text-[14px] font-bold leading-none text-[#0f141a] hover:border-[#ec7211] hover:bg-[#ec7211]"
-                  >
-                    Create hosted zone
-                  </Link>
-                </div>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ) : (
+              zones.map((zone) => (
+                <tr key={zone.id} className="border-b border-[#d5dbdb]">
+                  <td className="px-3 py-3 align-middle">
+                    <input type="checkbox" className="align-middle" />
+                  </td>
+                  <td className="px-3 py-3 align-middle text-[#006ce0]">{zone.domain_name}</td>
+                  <td className="px-3 py-3 align-middle capitalize">{zone.zone_type}</td>
+                  <td className="px-3 py-3 align-middle">{zone.created_by}</td>
+                  <td className="px-3 py-3 align-middle">{zone.record_count}</td>
+                  <td className="px-3 py-3 align-middle text-[#545b64]">
+                    {zone.description || "—"}
+                  </td>
+                  <td className="px-3 py-3 align-middle font-mono text-[13px]">
+                    {zone.hosted_zone_id}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

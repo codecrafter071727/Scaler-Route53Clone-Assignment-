@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ConsoleFooter } from "@/features/console/components/console-footer";
 import { ConsoleHeader } from "@/features/console/components/console-header";
@@ -13,20 +13,39 @@ export type Crumb = {
   href?: string;
 };
 
+const NAV_STORAGE_KEY = "aws-console-nav-open";
+
 type ConsoleShellProps = {
   crumbs: Crumb[];
   children: ReactNode;
-  defaultNavOpen?: boolean;
   showBreadcrumbInfo?: boolean;
 };
+
+function readStoredNavOpen(fallback: boolean): boolean {
+  if (typeof window === "undefined") return fallback;
+  const raw = window.sessionStorage.getItem(NAV_STORAGE_KEY);
+  if (raw === "1") return true;
+  if (raw === "0") return false;
+  return fallback;
+}
 
 export function ConsoleShell({
   crumbs,
   children,
-  defaultNavOpen = true,
   showBreadcrumbInfo = false,
 }: ConsoleShellProps) {
-  const [navOpen, setNavOpen] = useState(defaultNavOpen);
+  const [navOpen, setNavOpen] = useState(true);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setNavOpen(readStoredNavOpen(true));
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    window.sessionStorage.setItem(NAV_STORAGE_KEY, navOpen ? "1" : "0");
+  }, [navOpen, ready]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[#fcfcfd]">

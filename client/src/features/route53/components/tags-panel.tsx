@@ -4,7 +4,7 @@ import { useState } from "react";
 import { InfoLink } from "@/features/route53/components/form-bits";
 import { CloseIcon, SearchIcon } from "@/shared/icons";
 
-type TagRow = {
+export type TagRow = {
   id: string;
   keyName: string;
   value: string;
@@ -18,23 +18,26 @@ const BTN =
 const INPUT =
   "box-border h-8 w-full rounded-[8px] border bg-white py-0 pl-9 pr-3 text-[14px] text-[#0f141a] outline-none placeholder:italic placeholder:text-[#687078]";
 
-function newTag(): TagRow {
+export function newTagRow(): TagRow {
   return { id: crypto.randomUUID(), keyName: "", value: "" };
 }
 
-export function TagsPanel() {
-  const [tags, setTags] = useState<TagRow[]>([]);
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
+type Props = {
+  tags: TagRow[];
+  onChange: (tags: TagRow[]) => void;
+};
 
+export function TagsPanel({ tags, onChange }: Props) {
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const remaining = MAX_TAGS - tags.length;
 
   function addTag() {
     if (tags.length >= MAX_TAGS) return;
-    setTags((prev) => [...prev, newTag()]);
+    onChange([...tags, newTagRow()]);
   }
 
   function removeTag(id: string) {
-    setTags((prev) => prev.filter((tag) => tag.id !== id));
+    onChange(tags.filter((tag) => tag.id !== id));
     setTouched((prev) => {
       const next = { ...prev };
       delete next[id];
@@ -43,7 +46,7 @@ export function TagsPanel() {
   }
 
   function updateTag(id: string, patch: Partial<TagRow>) {
-    setTags((prev) => prev.map((tag) => (tag.id === id ? { ...tag, ...patch } : tag)));
+    onChange(tags.map((tag) => (tag.id === id ? { ...tag, ...patch } : tag)));
   }
 
   return (
@@ -63,7 +66,9 @@ export function TagsPanel() {
       ) : (
         <div className="mt-4 max-w-[1200px] space-y-3">
           {tags.map((tag, index) => {
-            const showError = tag.keyName.trim() === "" && Boolean(touched[tag.id]);
+            // Only after leaving the field — not on first add
+            const showError =
+              tag.keyName.trim() === "" && Boolean(touched[tag.id]);
 
             return (
               <div
@@ -81,7 +86,9 @@ export function TagsPanel() {
                       aria-invalid={showError}
                       value={tag.keyName}
                       onChange={(e) => updateTag(tag.id, { keyName: e.target.value })}
-                      onBlur={() => setTouched((prev) => ({ ...prev, [tag.id]: true }))}
+                      onBlur={() =>
+                        setTouched((prev) => ({ ...prev, [tag.id]: true }))
+                      }
                       placeholder="Enter key"
                       className={`${INPUT} ${
                         showError
