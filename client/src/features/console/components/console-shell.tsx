@@ -1,0 +1,82 @@
+"use client";
+
+import type { ReactNode } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { ConsoleFooter } from "@/features/console/components/console-footer";
+import { ConsoleHeader } from "@/features/console/components/console-header";
+import { SideNav } from "@/features/route53";
+import { InfoCircleIcon, MenuIcon } from "@/shared/icons";
+
+export type Crumb = {
+  label: string;
+  href?: string;
+};
+
+type ConsoleShellProps = {
+  crumbs: Crumb[];
+  children: ReactNode;
+  defaultNavOpen?: boolean;
+  showBreadcrumbInfo?: boolean;
+};
+
+export function ConsoleShell({
+  crumbs,
+  children,
+  defaultNavOpen = true,
+  showBreadcrumbInfo = false,
+}: ConsoleShellProps) {
+  const [navOpen, setNavOpen] = useState(defaultNavOpen);
+
+  return (
+    <div className="flex h-screen flex-col overflow-hidden bg-[#fcfcfd]">
+      <ConsoleHeader />
+
+      <div className="flex h-[52px] shrink-0 items-center gap-3 border-b border-[#d5dbdb] bg-white px-3">
+        <button
+          type="button"
+          aria-label={navOpen ? "Close side navigation" : "Open side navigation"}
+          onClick={() => setNavOpen((open) => !open)}
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#006ce0] text-white"
+        >
+          <MenuIcon className="h-4 w-4" />
+        </button>
+        <nav aria-label="Breadcrumbs" className="flex min-w-0 flex-1 items-center gap-1.5 text-[15px]">
+          {crumbs.map((crumb, index) => {
+            const isLast = index === crumbs.length - 1;
+            return (
+              <span key={`${crumb.label}-${index}`} className="flex items-center gap-1.5">
+                {index > 0 && <span className="text-[#656871]">&gt;</span>}
+                {crumb.href && !isLast ? (
+                  <Link href={crumb.href} className="text-[#006ce0] underline underline-offset-2">
+                    {crumb.label}
+                  </Link>
+                ) : isLast ? (
+                  <span className="font-bold text-[#656871]">{crumb.label}</span>
+                ) : (
+                  <span className="text-[#006ce0] underline underline-offset-2">{crumb.label}</span>
+                )}
+              </span>
+            );
+          })}
+        </nav>
+        {showBreadcrumbInfo && (
+          <button
+            type="button"
+            aria-label="Info"
+            className="mr-1 flex h-8 w-8 items-center justify-center rounded-full text-[#006ce0] hover:bg-[#f2f8fd]"
+          >
+            <InfoCircleIcon className="h-5 w-5" />
+          </button>
+        )}
+      </div>
+
+      <div className="flex min-h-0 flex-1">
+        {navOpen && <SideNav onClose={() => setNavOpen(false)} />}
+        {children}
+      </div>
+
+      <ConsoleFooter />
+    </div>
+  );
+}

@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Amazon Ember";
+  font-style: normal;
+  font-weight: 300;
+  src: url("/fonts/amazon-ember-300-normal.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Amazon Ember";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/amazon-ember-400-normal.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Amazon Ember";
+  font-style: italic;
+  font-weight: 400;
+  src: url("/fonts/amazon-ember-400-italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Amazon Ember";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/amazon-ember-700-normal.woff") format("woff");
+}
+
+:root {
+  --background: #fcfcfd;
+  --foreground: #0f141a;
+  --aws-blue: #006ce0;
+  --aws-orange: #ff9900;
+  --aws-header: #161d26;
+  --aws-sidebar: #f2f3f3;
+  --aws-border: #d5dbdb;
+  --aws-muted: #656871;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Amazon Ember", "Helvetica Neue", Roboto, Arial, sans-serif;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
