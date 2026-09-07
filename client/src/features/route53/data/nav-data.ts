@@ -62,5 +62,4 @@ export const tableColumns = [
   "Created by",
   "Record count",
   "Description",
-  "Hosted zone ID",
 ] as const;

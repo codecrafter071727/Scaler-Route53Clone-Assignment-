@@ -19,6 +19,8 @@ type ConsoleShellProps = {
   crumbs: Crumb[];
   children: ReactNode;
   showBreadcrumbInfo?: boolean;
+  /** Extra controls on the right of the breadcrumb bar (e.g. split-panel toggle). */
+  tools?: ReactNode;
 };
 
 function readStoredNavOpen(fallback: boolean): boolean {
@@ -33,6 +35,7 @@ export function ConsoleShell({
   crumbs,
   children,
   showBreadcrumbInfo = false,
+  tools,
 }: ConsoleShellProps) {
   const [navOpen, setNavOpen] = useState(true);
   const [ready, setReady] = useState(false);
@@ -79,7 +82,8 @@ export function ConsoleShell({
             );
           })}
         </nav>
-        {showBreadcrumbInfo && (
+        {tools}
+        {!tools && showBreadcrumbInfo ? (
           <button
             type="button"
             aria-label="Info"
@@ -87,7 +91,7 @@ export function ConsoleShell({
           >
             <InfoCircleOutlineIcon className="h-5 w-5" />
           </button>
-        )}
+        ) : null}
       </div>
 
       <div className="flex min-h-0 flex-1">

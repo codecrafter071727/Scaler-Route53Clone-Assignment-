@@ -2,7 +2,14 @@ import type { IconProps } from "./types";
 
 export function SearchIcon({ className = "h-4 w-4" }: IconProps) {
   return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden
+    >
       <path
         d="M11.5 11.5 14 14M7 12A5 5 0 1 1 7 2a5 5 0 0 1 0 10Z"
         stroke="currentColor"
