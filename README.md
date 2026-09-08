@@ -4,17 +4,6 @@ Full-stack clone of the **AWS Route 53 Hosted Zones** console. Users can sign up
 
 ---
 
-## Live demo
-
-| | |
-|--|--|
-| **App URL** | [https://route53-gamma.vercel.app](https://route53-gamma.vercel.app/) |
-| **Email** | `test@gmail.com` |
-| **Password** | `test@123` |
-
-Use these credentials to sign in and evaluate the console **without creating a new account**.
-
----
 
 ## Table of contents
 
