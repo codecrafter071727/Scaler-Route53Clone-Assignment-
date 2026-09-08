@@ -151,9 +151,9 @@ export function EditHostedZoneContent() {
   const isPrivate = detail.zone_type === "private";
 
   return (
-    <main className="min-w-0 flex-1 overflow-auto bg-background px-5 pb-8 pt-4 text-[14px] leading-5 text-foreground">
-      <div className="mb-4 flex items-baseline gap-2">
-        <h1 className="text-[28px] font-bold leading-8 text-foreground">
+    <main className="min-w-0 flex-1 overflow-auto bg-background px-3 pb-8 pt-4 text-[14px] leading-5 text-foreground sm:px-5">
+      <div className="mb-4 flex min-w-0 items-baseline gap-2">
+        <h1 className="truncate text-[22px] font-bold leading-7 text-foreground sm:text-[24px] sm:leading-8">
           Edit {detail.domain_name}
         </h1>
         <InfoLink />
@@ -213,7 +213,7 @@ export function EditHostedZoneContent() {
 
       {error ? <p className="mt-4 text-[13px] text-danger">{error}</p> : null}
 
-      <div className="mt-6 flex items-center justify-end gap-5">
+      <div className="mt-6 flex flex-wrap items-center justify-end gap-4 sm:gap-5">
         <Link
           href={`/hostedzones/${zoneId}`}
           className="text-[14px] font-bold leading-5 text-aws-blue hover:underline"

@@ -66,7 +66,7 @@ export function AccountMenu() {
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-8 max-w-[280px] items-center gap-1 truncate rounded px-2 hover:bg-white/10"
+        className="flex h-8 max-w-[120px] items-center gap-1 truncate rounded px-1.5 hover:bg-white/10 sm:max-w-[200px] sm:px-2 lg:max-w-[280px]"
       >
         <span className="truncate">{label}</span>
         <Caret />
@@ -75,14 +75,14 @@ export function AccountMenu() {
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-1 min-w-[160px] overflow-hidden rounded border border-header-search-border bg-card py-1 shadow-lg"
+          className="absolute right-0 top-full z-50 mt-1 min-w-[160px] overflow-hidden rounded border border-border bg-card py-1 shadow-lg"
         >
           <button
             type="button"
             role="menuitem"
             disabled={loading}
             onClick={handleLogout}
-            className="block w-full px-3 py-2 text-left text-[13px] text-header-fg hover:bg-white/10 disabled:opacity-60"
+            className="block w-full px-3 py-2 text-left text-[13px] text-foreground hover:bg-table-hover disabled:opacity-60"
           >
             {loading ? "Signing out…" : "Logout"}
           </button>

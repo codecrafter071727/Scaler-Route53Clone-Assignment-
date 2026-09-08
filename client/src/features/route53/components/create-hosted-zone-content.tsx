@@ -88,9 +88,9 @@ export function CreateHostedZoneContent() {
   }
 
   return (
-    <main className="min-w-0 flex-1 overflow-auto bg-background px-5 pb-8 pt-4 text-[14px] leading-5 text-foreground">
+    <main className="min-w-0 flex-1 overflow-auto bg-background px-3 pb-8 pt-4 text-[14px] leading-5 text-foreground sm:px-5">
       <div className="mb-4 flex items-baseline gap-2">
-        <h1 className="text-[24px] font-bold leading-7 text-foreground">Create hosted zone</h1>
+        <h1 className="text-[22px] font-bold leading-7 text-foreground sm:text-[24px]">Create hosted zone</h1>
         <InfoLink />
       </div>
 
@@ -153,7 +153,7 @@ export function CreateHostedZoneContent() {
 
       {error ? <p className="mt-4 text-[13px] text-danger">{error}</p> : null}
 
-      <div className="mt-6 flex items-center justify-end gap-5">
+      <div className="mt-6 flex flex-wrap items-center justify-end gap-4 sm:gap-5">
         <Link
           href="/hostedzones"
           className="text-[14px] font-bold leading-5 text-aws-blue hover:underline"

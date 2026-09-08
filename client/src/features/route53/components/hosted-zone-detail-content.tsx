@@ -126,7 +126,7 @@ export function HostedZoneDetailContent() {
   const tagsCountLabel = tagsLoading ? "…" : String(tags.length);
 
   return (
-    <main className="min-w-0 flex-1 overflow-auto bg-background px-6 pb-8 pt-5 text-[14px] leading-5 text-foreground">
+    <main className="min-w-0 flex-1 overflow-auto bg-background px-3 pb-8 pt-5 text-[14px] leading-5 text-foreground sm:px-6">
       {createdRecordName ? (
         <RecordCreatedFlash
           recordName={createdRecordName}

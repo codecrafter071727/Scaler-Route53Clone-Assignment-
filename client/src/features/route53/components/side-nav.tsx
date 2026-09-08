@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   footerLinks,
@@ -17,6 +19,7 @@ const ROW =
   "grid w-full grid-cols-[20px_minmax(0,1fr)] items-center gap-x-0.5 rounded-sm py-[6px] pr-2 text-left hover:text-aws-blue";
 
 export function SideNav({ onClose }: SideNavProps) {
+  const pathname = usePathname() || "";
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(navSections.map((s) => [s.title, true])),
   );
@@ -25,8 +28,16 @@ export function SideNav({ onClose }: SideNavProps) {
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
   }
 
+  function isActive(href?: string) {
+    if (!href) return false;
+    if (href === "/hostedzones") {
+      return pathname === "/hostedzones" || pathname.startsWith("/hostedzones/");
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return (
-    <aside className="flex h-full w-[300px] shrink-0 flex-col border-r border-border bg-sidebar text-[14px] leading-5">
+    <aside className="flex h-full w-[min(280px,85vw)] shrink-0 flex-col border-r border-border bg-sidebar text-[14px] leading-5 lg:w-[280px]">
       <div className="group grid grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-x-0.5 pb-1 pl-2 pr-2 pt-3">
         <span aria-hidden />
         <span className="text-[18px] font-bold leading-[22px] text-sidebar-title group-hover:text-aws-blue">
@@ -49,7 +60,7 @@ export function SideNav({ onClose }: SideNavProps) {
         <ul>
           {topLinks.map((link) => (
             <li key={link.label}>
-              <TextRow link={link} />
+              <TextRow link={link} active={isActive(link.href)} />
             </li>
           ))}
         </ul>
@@ -77,7 +88,7 @@ export function SideNav({ onClose }: SideNavProps) {
                 <ul>
                   {section.items.map((item) => (
                     <li key={item.label}>
-                      <TextRow link={item} />
+                      <TextRow link={item} active={isActive(item.href)} />
                     </li>
                   ))}
                 </ul>
@@ -92,6 +103,8 @@ export function SideNav({ onClose }: SideNavProps) {
               <li key={link.label}>
                 <a
                   href={link.href ?? "#"}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noreferrer" : undefined}
                   className="group inline-flex items-center gap-1.5 whitespace-nowrap text-[14px] font-normal leading-5 text-sidebar-text hover:text-aws-blue"
                 >
                   <span>{link.label}</span>
@@ -106,16 +119,19 @@ export function SideNav({ onClose }: SideNavProps) {
   );
 }
 
-function TextRow({ link }: { link: NavLink }) {
-  const color = link.active
+function TextRow({
+  link,
+  active,
+}: {
+  link: NavLink;
+  active: boolean;
+}) {
+  const color = active
     ? "font-bold text-aws-blue"
     : "font-normal text-sidebar-text";
 
-  return (
-    <a
-      href={link.href ?? "#"}
-      className={`group ${ROW} text-[14px] ${color} hover:text-aws-blue`}
-    >
+  const content = (
+    <>
       <span aria-hidden />
       <span className="flex min-w-0 items-center gap-1">
         <span className="truncate">{link.label}</span>
@@ -125,6 +141,21 @@ function TextRow({ link }: { link: NavLink }) {
           </span>
         )}
       </span>
-    </a>
+    </>
+  );
+
+  if (!link.href) {
+    return (
+      <span className={`group ${ROW} text-[14px] ${color}`}>{content}</span>
+    );
+  }
+
+  return (
+    <Link
+      href={link.href}
+      className={`group ${ROW} text-[14px] ${color} hover:text-aws-blue`}
+    >
+      {content}
+    </Link>
   );
 }

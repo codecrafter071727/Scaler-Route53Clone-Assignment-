@@ -192,7 +192,7 @@ export function HostedZonesPropertyFilter({
   }
 
   return (
-    <div ref={rootRef} className="relative w-full max-w-[640px]">
+    <div ref={rootRef} className="relative w-full min-w-0 max-w-[640px]">
       {tokens.length > 0 ? (
         <div className="mb-2 flex flex-wrap gap-1.5">
           {tokens.map((token) => (

@@ -91,10 +91,10 @@ export function HostedZonesContent() {
   const hasFilter = tokens.length > 0 || Boolean(freeText.trim());
 
   return (
-    <div className="flex min-h-0 min-w-0 flex-1">
-      <main className="min-w-0 flex-1 overflow-auto bg-background px-6 pb-4 pt-5 text-[14px] leading-5 text-foreground">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <h1 className="text-[24px] font-bold leading-8 text-foreground">
+    <div className="relative flex min-h-0 min-w-0 flex-1">
+      <main className="min-w-0 flex-1 overflow-auto bg-background px-3 pb-4 pt-4 text-[14px] leading-5 text-foreground sm:px-6 sm:pt-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+          <h1 className="text-[22px] font-bold leading-7 text-foreground sm:text-[24px] sm:leading-8">
             Hosted zones{" "}
             <span className="font-normal text-muted">({countLabel})</span>
           </h1>
@@ -130,7 +130,7 @@ export function HostedZonesContent() {
           </div>
         </div>
 
-        <p className="mt-2 mb-5 max-w-3xl text-[14px] leading-5 text-foreground">
+        <p className="mt-2 mb-4 max-w-3xl text-[13px] leading-5 text-foreground sm:mb-5 sm:text-[14px]">
           Automatic mode is the current search behavior optimized for best filter
           results.{" "}
           <a href="#" className="text-aws-blue underline underline-offset-2">
@@ -138,13 +138,13 @@ export function HostedZonesContent() {
           </a>
         </p>
 
-        <div className="mb-0 flex items-start justify-between gap-6 border-b border-border pb-3">
+        <div className="mb-0 flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <HostedZonesPropertyFilter
             tokens={tokens}
             onTokensChange={setTokens}
             onFreeTextSearch={setFreeText}
           />
-          <div className="flex shrink-0 items-center self-center">
+          <div className="flex shrink-0 items-center self-end sm:self-center">
             <div className="flex items-center gap-3.5 pr-2.5">
               <button
                 type="button"

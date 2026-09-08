@@ -14,11 +14,11 @@ import { AccountMenu } from "./account-menu";
 
 export function ConsoleHeader() {
   return (
-    <header className="flex h-11 shrink-0 items-center gap-2 border-b border-header-search-border bg-chrome px-3 text-[13px] text-header-fg">
+    <header className="flex h-11 shrink-0 items-center gap-1 border-b border-header-search-border bg-chrome px-2 text-[13px] text-header-fg sm:gap-2 sm:px-3">
       <span
         role="img"
         aria-label="AWS"
-        className="inline-block h-7 w-[52px] shrink-0 bg-white"
+        className="inline-block h-6 w-10 shrink-0 bg-white sm:h-7 sm:w-[52px]"
         style={{
           WebkitMaskImage: "url(/aws-logo.png)",
           maskImage: "url(/aws-logo.png)",
@@ -32,38 +32,40 @@ export function ConsoleHeader() {
       />
       <button
         type="button"
-        className="flex h-8 w-8 items-center justify-center rounded text-header-fg hover:bg-white/10"
+        className="hidden h-8 w-8 items-center justify-center rounded text-header-fg hover:bg-white/10 sm:flex"
         aria-label="Services"
       >
         <GridIcon className="h-[18px] w-[18px]" />
       </button>
 
-      <div className="relative ml-1 flex h-8 min-w-0 max-w-[520px] flex-1 items-center">
+      <div className="relative ml-0.5 flex h-8 min-w-0 max-w-[520px] flex-1 items-center sm:ml-1">
         <SearchIcon className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-[#9ca3af]" />
         <input
           type="search"
           placeholder="Search"
-          className="h-8 w-full rounded border border-header-search-border bg-header-search py-0 pl-8 pr-16 text-[13px] text-white outline-none placeholder:text-[#9ca3af] focus:border-[#539fe5]"
+          className="h-8 w-full rounded border border-header-search-border bg-header-search py-0 pl-8 pr-3 text-[13px] text-white outline-none placeholder:text-[#9ca3af] focus:border-[#539fe5] sm:pr-16"
         />
-        <span className="pointer-events-none absolute right-2 rounded border border-[#4b5563] px-1.5 py-0.5 text-[11px] text-[#9ca3af]">
+        <span className="pointer-events-none absolute right-2 hidden rounded border border-[#4b5563] px-1.5 py-0.5 text-[11px] text-[#9ca3af] sm:inline">
           [Alt+S]
         </span>
       </div>
 
-      <div className="ml-auto flex items-center gap-0.5">
-        <IconBtn label="CloudShell">
-          <TerminalIcon />
-        </IconBtn>
-        <IconBtn label="Notifications">
-          <BellIcon />
-        </IconBtn>
-        <IconBtn label="Support">
-          <HelpIcon />
-        </IconBtn>
+      <div className="ml-auto flex shrink-0 items-center gap-0.5">
+        <div className="hidden items-center gap-0.5 md:flex">
+          <IconBtn label="CloudShell">
+            <TerminalIcon />
+          </IconBtn>
+          <IconBtn label="Notifications">
+            <BellIcon />
+          </IconBtn>
+          <IconBtn label="Support">
+            <HelpIcon />
+          </IconBtn>
+        </div>
         <SettingsMenu />
         <button
           type="button"
-          className="ml-1 flex h-8 items-center gap-1 rounded px-2 hover:bg-white/10"
+          className="ml-0.5 hidden h-8 items-center gap-1 rounded px-2 hover:bg-white/10 lg:flex"
         >
           <span>Global</span>
           <Caret />

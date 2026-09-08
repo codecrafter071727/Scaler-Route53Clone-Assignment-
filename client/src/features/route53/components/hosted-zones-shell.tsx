@@ -6,6 +6,10 @@ import { ConsoleShell, type Crumb } from "@/features/console";
 import { getHostedZone } from "@/features/route53/api/hosted-zones-api";
 import { HostedZonesTools } from "@/features/route53/components/hosted-zones-tools";
 import { DetailsPanelProvider } from "@/features/route53/context/details-panel-context";
+import {
+  sectionLabelForPath,
+  titleForPath,
+} from "@/features/route53/data/nav-data";
 
 type Props = {
   children: ReactNode;
@@ -82,13 +86,34 @@ function crumbsForPath(
     };
   }
 
+  if (pathname === "/hostedzones" || pathname === "/hostedzones/") {
+    return {
+      showBreadcrumbInfo: false,
+      showSplitTools: true,
+      crumbs: [
+        { label: "Route 53", href: "/hostedzones" },
+        { label: "Hosted zones" },
+      ],
+    };
+  }
+
+  const pageTitle = titleForPath(pathname);
+  if (pageTitle) {
+    const section = sectionLabelForPath(pathname);
+    const crumbs: Crumb[] = [{ label: "Route 53", href: "/hostedzones" }];
+    if (section) crumbs.push({ label: section });
+    crumbs.push({ label: pageTitle });
+    return {
+      showBreadcrumbInfo: true,
+      showSplitTools: false,
+      crumbs,
+    };
+  }
+
   return {
     showBreadcrumbInfo: false,
-    showSplitTools: true,
-    crumbs: [
-      { label: "Route 53", href: "/hostedzones" },
-      { label: "Hosted zones" },
-    ],
+    showSplitTools: false,
+    crumbs: [{ label: "Route 53", href: "/hostedzones" }],
   };
 }
 

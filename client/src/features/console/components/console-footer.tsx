@@ -11,8 +11,8 @@ const rightItems = ["Privacy", "Terms", "Cookie preferences"] as const;
 
 export function ConsoleFooter() {
   return (
-    <footer className="flex h-[34px] shrink-0 items-center justify-between gap-6 bg-chrome px-4 text-[13px] font-normal text-header-fg">
-      <ul className="flex h-full min-w-0 items-center gap-x-6">
+    <footer className="flex h-9 shrink-0 items-center justify-between gap-3 overflow-x-auto bg-chrome px-3 text-[12px] font-normal text-header-fg sm:h-[34px] sm:gap-6 sm:px-4 sm:text-[13px]">
+      <ul className="hidden h-full min-w-0 items-center gap-x-6 md:flex">
         {leftItems.map((item) => {
           const Icon = "icon" in item ? item.icon : null;
           return (
@@ -29,12 +29,20 @@ export function ConsoleFooter() {
         })}
       </ul>
 
-      <ul className="flex h-full shrink-0 items-center justify-end gap-x-6">
-        <li className="flex h-full items-center whitespace-nowrap leading-none">
-          © 2026, Amazon Web Services, Inc. or its affiliates.
+      <ul className="flex h-full min-w-0 flex-1 items-center justify-end gap-x-3 sm:gap-x-6 md:flex-none md:shrink-0">
+        <li className="flex h-full items-center truncate whitespace-nowrap leading-none">
+          <span className="hidden sm:inline">
+            © 2026, Amazon Web Services, Inc. or its affiliates.
+          </span>
+          <span className="sm:hidden">© 2026 AWS</span>
         </li>
         {rightItems.map((label) => (
-          <li key={label} className="flex h-full items-center">
+          <li
+            key={label}
+            className={`flex h-full items-center ${
+              label === "Cookie preferences" ? "hidden sm:flex" : ""
+            }`}
+          >
             <a
               href="#"
               className="inline-flex h-full items-center whitespace-nowrap leading-none hover:text-aws-blue"

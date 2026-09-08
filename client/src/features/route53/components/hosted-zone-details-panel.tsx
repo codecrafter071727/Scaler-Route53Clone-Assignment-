@@ -222,20 +222,28 @@ export function HostedZoneDetailsPanel({ zoneId, onClose }: Props) {
   const empty = zoneId == null;
 
   return (
-    <aside className="flex h-full w-[282px] shrink-0 flex-col overflow-auto border-l border-border bg-surface text-[14px] leading-5 text-foreground">
-      <PanelHeader
-        title={empty ? "0 hosted zone selected" : "Hosted zone details"}
-        onClose={onClose}
+    <>
+      <button
+        type="button"
+        aria-label="Close details panel"
+        className="absolute inset-0 z-30 bg-black/50 lg:hidden"
+        onClick={onClose}
       />
-      <div className="min-h-0 flex-1 pb-5 pt-0">
-        {empty ? (
-          <div className="px-4">
-            <EmptySelection />
-          </div>
-        ) : (
-          <ZoneDetails zoneId={zoneId} />
-        )}
-      </div>
-    </aside>
+      <aside className="absolute inset-y-0 right-0 z-40 flex h-full w-[min(320px,92vw)] flex-col overflow-auto border-l border-border bg-surface text-[14px] leading-5 text-foreground shadow-xl lg:static lg:z-0 lg:w-[282px] lg:shrink-0 lg:shadow-none">
+        <PanelHeader
+          title={empty ? "0 hosted zone selected" : "Hosted zone details"}
+          onClose={onClose}
+        />
+        <div className="min-h-0 flex-1 pb-5 pt-0">
+          {empty ? (
+            <div className="px-4">
+              <EmptySelection />
+            </div>
+          ) : (
+            <ZoneDetails zoneId={zoneId} />
+          )}
+        </div>
+      </aside>
+    </>
   );
 }

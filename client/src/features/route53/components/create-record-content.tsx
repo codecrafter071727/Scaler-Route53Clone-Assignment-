@@ -153,7 +153,7 @@ export function CreateRecordContent() {
   }
 
   return (
-    <main className="relative min-w-0 flex-1 overflow-auto bg-background px-6 pb-10 pt-5 text-[14px] leading-5 text-foreground">
+    <main className="relative min-w-0 flex-1 overflow-auto bg-background px-3 pb-10 pt-5 text-[14px] leading-5 text-foreground sm:px-6">
       {saving ? (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
