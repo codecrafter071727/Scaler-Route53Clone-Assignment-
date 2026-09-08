@@ -206,6 +206,10 @@ export function HostedZoneRecordsPanel({
             To change modes go to settings.
           </a>
         </p>
+        <p className="mt-1 px-5 text-[13px] leading-5 text-muted-2">
+          Default NS and SOA records for this zone cannot be selected or
+          deleted. Create another record to use the checkboxes and Delete.
+        </p>
 
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 pb-3">
           <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2">

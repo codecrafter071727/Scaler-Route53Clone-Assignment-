@@ -57,6 +57,7 @@ export function HostedZoneRecordsTable({
                 checked={allSelected}
                 disabled={selectableIds.length === 0}
                 onChange={() => onToggleAll(selectableIds)}
+                className="h-3.5 w-3.5 accent-aws-blue disabled:cursor-not-allowed disabled:opacity-40"
               />
             </th>
             {RECORD_SORT_COLUMNS.map((col, index) => {
@@ -101,7 +102,11 @@ export function HostedZoneRecordsTable({
                 <td className="px-3 py-2.5 align-top">
                   <input
                     type="checkbox"
-                    aria-label={`Select ${record.record_name} ${record.record_type}`}
+                    aria-label={
+                      protectedRow
+                        ? `${record.record_name} ${record.record_type} cannot be selected`
+                        : `Select ${record.record_name} ${record.record_type}`
+                    }
                     checked={selected}
                     disabled={protectedRow}
                     title={
@@ -109,7 +114,10 @@ export function HostedZoneRecordsTable({
                         ? "Default NS and SOA records cannot be deleted"
                         : undefined
                     }
-                    onChange={() => onToggle(record.id)}
+                    onChange={() => {
+                      if (!protectedRow) onToggle(record.id);
+                    }}
+                    className="h-3.5 w-3.5 accent-aws-blue disabled:cursor-not-allowed disabled:opacity-40"
                   />
                 </td>
                 <td className="px-3 py-2.5 align-top">{record.record_name}</td>
