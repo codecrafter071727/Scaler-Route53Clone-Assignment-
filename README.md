@@ -2,13 +2,23 @@
 
 Full-stack clone of the **AWS Route 53 Hosted Zones** console. Users can sign up, manage hosted zones and DNS records, and use an AWS Management Console–style UI.
 
-**Frontend:** Next.js (TypeScript) · **Backend:** FastAPI (Python) · **Database:** SQLite
+---
+
+## Live demo
+
+| | |
+|--|--|
+| **App URL** | [https://route53-gamma.vercel.app](https://route53-gamma.vercel.app/) |
+| **Email** | `test@gmail.com` |
+| **Password** | `test@123` |
+
+Use these credentials to sign in and evaluate the console **without creating a new account**.
 
 ---
 
 ## Table of contents
 
-- [Tech stack](#tech-stack)
+- [Live demo](#live-demo)
 - [Features](#features)
 - [Project structure](#project-structure)
 - [Architecture](#architecture)
@@ -18,17 +28,6 @@ Full-stack clone of the **AWS Route 53 Hosted Zones** console. Users can sign up
 - [Environment variables](#environment-variables)
 - [Application routes](#application-routes)
 - [Notes](#notes)
-
----
-
-## Tech stack
-
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 16, TypeScript, Tailwind CSS 4, Axios |
-| Backend | FastAPI, SQLAlchemy 2, Pydantic v2, Uvicorn, bcrypt |
-| Database | SQLite (`server/data/app.db`) |
-| Auth | httpOnly session cookie + server-side session tokens |
 
 ---
 

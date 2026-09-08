@@ -1,0 +1,32 @@
+# Render Blueprint — backend API
+# Dashboard: New → Blueprint → connect this repo
+# Or create a Web Service manually and copy these env vars.
+
+services:
+  - type: web
+    name: scaler-route53-api
+    runtime: python
+    rootDir: server
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_NAME
+        value: Scaler Assignment API
+      - key: API_PREFIX
+        value: /api
+      - key: DATABASE_URL
+        value: sqlite:///./data/app.db
+      # Frontend origin(s), comma-separated — required for browser login
+      - key: CORS_ORIGINS
+        value: http://localhost:3000,https://route53-gamma.vercel.app
+      - key: SESSION_COOKIE_NAME
+        value: session_token
+      - key: SESSION_MAX_AGE_SECONDS
+        value: "604800"
+      # Cross-site cookie (localhost UI → Render API)
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SAMESITE
+        value: none
+      - key: PASSWORD_MIN_LENGTH
+        value: "8"
