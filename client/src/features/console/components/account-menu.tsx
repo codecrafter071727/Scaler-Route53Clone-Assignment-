@@ -3,11 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getMe, signOut } from "@/features/auth/api/auth-api";
-
-const loginPath = process.env.NEXT_PUBLIC_LOGIN_PATH;
-if (!loginPath) {
-  throw new Error("NEXT_PUBLIC_LOGIN_PATH is not set");
-}
+import { clientEnv } from "@/shared/config/env";
 
 export function AccountMenu() {
   const router = useRouter();
@@ -20,7 +16,7 @@ export function AccountMenu() {
     let active = true;
     getMe()
       .then((user) => {
-        if (active) setLabel(`${user.name} (${user.id})`);
+        if (active) setLabel(`${user.name} (${user.account_id})`);
       })
       .catch(() => {
         /* RequireAuth handles redirect */
@@ -55,7 +51,7 @@ export function AccountMenu() {
     } finally {
       setOpen(false);
       setLoading(false);
-      router.replace(loginPath);
+      router.replace(clientEnv.loginPath);
     }
   }
 

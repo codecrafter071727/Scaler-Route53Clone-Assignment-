@@ -9,6 +9,7 @@ import {
   topLinks,
   type NavLink,
 } from "@/features/route53/data/nav-data";
+import { isHostedZonesPath, routes } from "@/features/route53/lib/routes";
 import { CaretDown, ChevronLeft, ExternalLinkIcon } from "@/shared/icons";
 
 type SideNavProps = {
@@ -30,8 +31,8 @@ export function SideNav({ onClose }: SideNavProps) {
 
   function isActive(href?: string) {
     if (!href) return false;
-    if (href === "/hostedzones") {
-      return pathname === "/hostedzones" || pathname.startsWith("/hostedzones/");
+    if (href === routes.hostedZones) {
+      return isHostedZonesPath(pathname);
     }
     return pathname === href || pathname.startsWith(`${href}/`);
   }

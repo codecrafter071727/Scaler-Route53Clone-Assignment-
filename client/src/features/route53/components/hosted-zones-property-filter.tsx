@@ -277,7 +277,9 @@ export function HostedZonesPropertyFilter({
           highlight={highlight}
           listId={listId}
           onHighlight={setHighlight}
-          onSelectProperty={selectProperty}
+          onSelectProperty={(property) =>
+            selectProperty(property as FilterProperty)
+          }
           onSelectValue={(value) => {
             if (activeProperty) addToken(activeProperty, value);
           }}

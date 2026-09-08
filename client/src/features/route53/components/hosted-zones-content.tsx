@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   listHostedZones,
@@ -11,38 +11,61 @@ import {
   DisabledBtn,
   PrimaryBtn,
 } from "@/features/route53/components/hosted-zones-action-buttons";
+import { DeleteHostedZoneModal } from "@/features/route53/components/delete-hosted-zone-modal";
+import { HostedZoneDeletedFlash } from "@/features/route53/components/hosted-zone-deleted-flash";
 import { HostedZoneDetailsPanel } from "@/features/route53/components/hosted-zone-details-panel";
 import { HostedZonesPropertyFilter } from "@/features/route53/components/hosted-zones-property-filter";
 import { HostedZonesTable } from "@/features/route53/components/hosted-zones-table";
+import { TablePagination } from "@/features/route53/components/table-pagination";
 import { useDetailsPanel } from "@/features/route53/context/details-panel-context";
 import {
   tokensToApiFilters,
   type FilterToken,
 } from "@/features/route53/data/filter-properties";
+import { DEFAULT_PAGE_SIZE } from "@/features/route53/lib/pagination";
+import { routes } from "@/features/route53/lib/routes";
 import {
   nextSortState,
   sortHostedZones,
   type SortColumn,
   type SortDir,
 } from "@/features/route53/lib/sort-hosted-zones";
-import { RefreshIcon, SettingsIcon } from "@/shared/icons";
+import { RefreshIcon } from "@/shared/icons";
 
 export function HostedZonesContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [zones, setZones] = useState<HostedZoneListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [tokens, setTokens] = useState<FilterToken[]>([]);
   const [freeText, setFreeText] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [sortColumn, setSortColumn] = useState<SortColumn | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletedDomain, setDeletedDomain] = useState<string | null>(null);
   const {
-    selectedId,
+    selectedZoneId,
     detailsOpen,
     selectZone,
-    setSelectedId,
+    setSelectedZoneId,
     setDetailsOpen,
   } = useDetailsPanel();
+
+  const selectedZone =
+    selectedZoneId == null
+      ? null
+      : (zones.find((z) => z.hosted_zone_id === selectedZoneId) ?? null);
+
+  useEffect(() => {
+    const deleted = searchParams.get("deleted");
+    if (!deleted) return;
+    setDeletedDomain(deleted);
+    router.replace(routes.hostedZones, { scroll: false });
+  }, [searchParams, router]);
 
   function handleSort(column: SortColumn) {
     const next = nextSortState(sortColumn, sortDir, column);
@@ -62,37 +85,57 @@ export function HostedZonesContent() {
       const filters = {
         ...tokensToApiFilters(tokens),
         ...(freeText.trim() ? { q: freeText.trim() } : {}),
+        page,
+        page_size: DEFAULT_PAGE_SIZE,
       };
       const data = await listHostedZones(filters);
-      setZones(data);
-      setSelectedId((prev) => {
-        if (prev != null && data.some((z) => z.id === prev)) return prev;
+      setZones(data.items);
+      setTotal(data.total);
+      setTotalPages(data.total_pages);
+      if (data.total_pages > 0 && page > data.total_pages) {
+        setPage(data.total_pages);
+      }
+      setSelectedZoneId((prev) => {
+        if (prev != null && data.items.some((z) => z.hosted_zone_id === prev)) {
+          return prev;
+        }
         return null;
       });
     } catch {
       setError("Unable to load hosted zones.");
       setZones([]);
-      setSelectedId(null);
+      setTotal(0);
+      setTotalPages(0);
+      setSelectedZoneId(null);
       setDetailsOpen(false);
     } finally {
       setLoading(false);
     }
-  }, [tokens, freeText, setSelectedId, setDetailsOpen]);
+  }, [tokens, freeText, page, setSelectedZoneId, setDetailsOpen]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
-  const selectedCount = selectedId == null ? 0 : 1;
+  useEffect(() => {
+    setPage(1);
+  }, [tokens, freeText]);
+
+  const selectedCount = selectedZoneId == null ? 0 : 1;
   const countLabel =
-    selectedCount > 0
-      ? `${selectedCount}/${sortedZones.length}`
-      : String(sortedZones.length);
+    selectedCount > 0 ? `${selectedCount}/${total}` : String(total);
   const hasFilter = tokens.length > 0 || Boolean(freeText.trim());
 
   return (
     <div className="relative flex min-h-0 min-w-0 flex-1">
       <main className="min-w-0 flex-1 overflow-auto bg-background px-3 pb-4 pt-4 text-[14px] leading-5 text-foreground sm:px-6 sm:pt-5">
+        {deletedDomain ? (
+          <HostedZoneDeletedFlash
+            domainName={deletedDomain}
+            onDismiss={() => setDeletedDomain(null)}
+          />
+        ) : null}
+
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
           <h1 className="text-[22px] font-bold leading-7 text-foreground sm:text-[24px] sm:leading-8">
             Hosted zones{" "}
@@ -107,17 +150,29 @@ export function HostedZonesContent() {
             >
               <RefreshIcon className="h-[18px] w-[18px]" />
             </button>
-            {selectedId != null ? (
+            {selectedZoneId != null ? (
               <>
-                <ActionBtn onClick={() => router.push(`/hostedzones/${selectedId}`)}>
+                <ActionBtn
+                  onClick={() =>
+                    router.push(routes.hostedZone(selectedZoneId))
+                  }
+                >
                   View details
                 </ActionBtn>
                 <ActionBtn
-                  onClick={() => router.push(`/hostedzones/${selectedId}/edit`)}
+                  onClick={() =>
+                    router.push(routes.hostedZoneEdit(selectedZoneId))
+                  }
                 >
                   Edit
                 </ActionBtn>
-                <ActionBtn onClick={() => undefined}>Delete</ActionBtn>
+                <ActionBtn
+                  onClick={() => {
+                    if (selectedZone) setDeleteOpen(true);
+                  }}
+                >
+                  Delete
+                </ActionBtn>
               </>
             ) : (
               <>
@@ -126,7 +181,9 @@ export function HostedZonesContent() {
                 <DisabledBtn>Delete</DisabledBtn>
               </>
             )}
-            <PrimaryBtn href="/hostedzones/create">Create hosted zone</PrimaryBtn>
+            <PrimaryBtn href={routes.hostedZonesCreate}>
+              Create hosted zone
+            </PrimaryBtn>
           </div>
         </div>
 
@@ -144,37 +201,11 @@ export function HostedZonesContent() {
             onTokensChange={setTokens}
             onFreeTextSearch={setFreeText}
           />
-          <div className="flex shrink-0 items-center self-end sm:self-center">
-            <div className="flex items-center gap-3.5 pr-2.5">
-              <button
-                type="button"
-                aria-label="Previous page"
-                className="text-[18px] font-normal leading-none text-muted"
-                disabled
-              >
-                &lt;
-              </button>
-              <span className="text-[15px] font-bold leading-none text-foreground">
-                1
-              </span>
-              <button
-                type="button"
-                aria-label="Next page"
-                className="text-[18px] font-normal leading-none text-muted"
-                disabled
-              >
-                &gt;
-              </button>
-            </div>
-            <div className="mx-1 h-4 w-px bg-border" />
-            <button
-              type="button"
-              aria-label="Preferences"
-              className="ml-0.5 flex h-7 w-7 items-center justify-center text-foreground"
-            >
-              <SettingsIcon className="h-4 w-4" />
-            </button>
-          </div>
+          <TablePagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
 
         {error ? <p className="mt-3 text-[13px] text-danger">{error}</p> : null}
@@ -183,19 +214,38 @@ export function HostedZonesContent() {
           zones={sortedZones}
           loading={loading}
           hasFilter={hasFilter}
-          selectedId={selectedId}
+          selectedZoneId={selectedZoneId}
           sortColumn={sortColumn}
           sortDir={sortDir}
           onSort={handleSort}
           onSelect={selectZone}
-          onOpenDetails={(id) => router.push(`/hostedzones/${id}`)}
+          onOpenDetails={(hostedZoneId) =>
+            router.push(routes.hostedZone(hostedZoneId))
+          }
         />
       </main>
 
       {detailsOpen ? (
         <HostedZoneDetailsPanel
-          zoneId={selectedId}
+          zoneId={selectedZoneId}
           onClose={() => setDetailsOpen(false)}
+        />
+      ) : null}
+
+      {selectedZone ? (
+        <DeleteHostedZoneModal
+          zoneId={selectedZone.hosted_zone_id}
+          domainName={selectedZone.domain_name}
+          open={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          onDeleted={() => {
+            const name = selectedZone.domain_name;
+            setDeleteOpen(false);
+            setSelectedZoneId(null);
+            setDetailsOpen(false);
+            setDeletedDomain(name);
+            void load();
+          }}
         />
       ) : null}
     </div>

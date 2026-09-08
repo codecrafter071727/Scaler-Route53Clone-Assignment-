@@ -6,8 +6,10 @@ from app.database import Base, engine
 from app.models import HostedZone, RecordSet, SessionToken, User  # noqa: F401
 from app.routers.auth import router as auth_router
 from app.routers.hosted_zones import router as hosted_zones_router
+from app.schema_migrate import ensure_schema
 
 Base.metadata.create_all(bind=engine)
+ensure_schema()
 
 app = FastAPI(title=settings.app_name)
 

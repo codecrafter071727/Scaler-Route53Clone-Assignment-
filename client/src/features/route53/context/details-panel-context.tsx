@@ -10,11 +10,11 @@ import {
 } from "react";
 
 type DetailsPanelContextValue = {
-  selectedId: number | null;
+  selectedZoneId: string | null;
   detailsOpen: boolean;
-  selectZone: (id: number) => void;
-  setSelectedId: (
-    id: number | null | ((prev: number | null) => number | null),
+  selectZone: (hostedZoneId: string) => void;
+  setSelectedZoneId: (
+    id: string | null | ((prev: string | null) => string | null),
   ) => void;
   setDetailsOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
   toggleDetails: () => void;
@@ -23,11 +23,11 @@ type DetailsPanelContextValue = {
 const DetailsPanelContext = createContext<DetailsPanelContextValue | null>(null);
 
 export function DetailsPanelProvider({ children }: { children: ReactNode }) {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const selectZone = useCallback((id: number) => {
-    setSelectedId(id);
+  const selectZone = useCallback((hostedZoneId: string) => {
+    setSelectedZoneId(hostedZoneId);
     setDetailsOpen(true);
   }, []);
 
@@ -37,14 +37,14 @@ export function DetailsPanelProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      selectedId,
+      selectedZoneId,
       detailsOpen,
       selectZone,
-      setSelectedId,
+      setSelectedZoneId,
       setDetailsOpen,
       toggleDetails,
     }),
-    [selectedId, detailsOpen, selectZone, toggleDetails],
+    [selectedZoneId, detailsOpen, selectZone, toggleDetails],
   );
 
   return (

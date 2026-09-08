@@ -1,6 +1,3 @@
-import secrets
-import string
-
 from fastapi import HTTPException, status
 from sqlalchemy import String, cast, or_
 from sqlalchemy.orm import Query, Session
@@ -8,17 +5,17 @@ from sqlalchemy.orm import Query, Session
 from app.models import HostedZone, User
 from app.schemas.hosted_zone import HostedZoneCreate, HostedZoneUpdate
 from app.services import record_sets as record_service
-
-
-def _generate_zone_id() -> str:
-    alphabet = string.ascii_uppercase + string.digits
-    return "Z" + "".join(secrets.choice(alphabet) for _ in range(13))
+from app.services.ids import generate_hosted_zone_id
 
 
 def create_hosted_zone(db: Session, user: User, payload: HostedZoneCreate) -> HostedZone:
+    zone_id = generate_hosted_zone_id()
+    while db.query(HostedZone).filter(HostedZone.hosted_zone_id == zone_id).first():
+        zone_id = generate_hosted_zone_id()
+
     zone = HostedZone(
         user_id=user.id,
-        hosted_zone_id=_generate_zone_id(),
+        hosted_zone_id=zone_id,
         domain_name=payload.domain_name,
         description=payload.description,
         zone_type=payload.zone_type,
@@ -50,7 +47,11 @@ def list_hosted_zones_for_user(
     description: str | None = None,
     hosted_zone_id: str | None = None,
     q: str | None = None,
-) -> list[HostedZone]:
+    page: int = 1,
+    page_size: int = 20,
+) -> tuple[list[HostedZone], int]:
+    from app.schemas.pagination import clamp_page, clamp_page_size, page_offset
+
     query: Query[HostedZone] = db.query(HostedZone).filter(
         HostedZone.user_id == user.id
     )
@@ -84,7 +85,16 @@ def list_hosted_zones_for_user(
             )
         )
 
-    return query.order_by(HostedZone.id.desc()).all()
+    total = query.count()
+    p = clamp_page(page)
+    size = clamp_page_size(page_size)
+    items = (
+        query.order_by(HostedZone.id.desc())
+        .offset(page_offset(p, size))
+        .limit(size)
+        .all()
+    )
+    return items, total
 
 
 def list_filter_options_for_user(db: Session, user: User) -> dict[str, list[str]]:
@@ -162,10 +172,15 @@ def list_property_values_for_user(
         )
     return options[property_key]
 
-def get_hosted_zone_for_user(db: Session, user: User, zone_pk: int) -> HostedZone:
+def get_hosted_zone_for_user(
+    db: Session, user: User, hosted_zone_id: str
+) -> HostedZone:
     zone = (
         db.query(HostedZone)
-        .filter(HostedZone.id == zone_pk, HostedZone.user_id == user.id)
+        .filter(
+            HostedZone.hosted_zone_id == hosted_zone_id.strip(),
+            HostedZone.user_id == user.id,
+        )
         .first()
     )
     if zone is None:
@@ -177,9 +192,9 @@ def get_hosted_zone_for_user(db: Session, user: User, zone_pk: int) -> HostedZon
 
 
 def update_hosted_zone(
-    db: Session, user: User, zone_pk: int, payload: HostedZoneUpdate
+    db: Session, user: User, hosted_zone_id: str, payload: HostedZoneUpdate
 ) -> HostedZone:
-    zone = get_hosted_zone_for_user(db, user, zone_pk)
+    zone = get_hosted_zone_for_user(db, user, hosted_zone_id)
 
     if zone.zone_type == "private" and len(payload.vpcs) == 0:
         raise HTTPException(
@@ -200,7 +215,13 @@ def update_hosted_zone(
 
 
 def list_hosted_zone_tags_for_user(
-    db: Session, user: User, zone_pk: int
+    db: Session, user: User, hosted_zone_id: str
 ) -> list[dict]:
-    zone = get_hosted_zone_for_user(db, user, zone_pk)
+    zone = get_hosted_zone_for_user(db, user, hosted_zone_id)
     return list(zone.tags or [])
+
+
+def delete_hosted_zone(db: Session, user: User, hosted_zone_id: str) -> None:
+    zone = get_hosted_zone_for_user(db, user, hosted_zone_id)
+    db.delete(zone)
+    db.commit()

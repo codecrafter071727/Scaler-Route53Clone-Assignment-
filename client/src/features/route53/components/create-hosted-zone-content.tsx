@@ -22,6 +22,7 @@ import {
   type TagRow,
 } from "@/features/route53/components/tags-panel";
 import { getApiErrorMessage } from "@/features/auth/lib/api-error";
+import { routes } from "@/features/route53/lib/routes";
 
 const VALID_CHARS =
   'Valid characters: a-z, 0-9, ! " # $ % & \' ( ) * + , - / : ; < = > ? @ [ \\ ] ^ _ ` { | } . ~';
@@ -79,7 +80,7 @@ export function CreateHostedZoneContent() {
           .filter((t) => t.keyName.trim())
           .map((t) => ({ key: t.keyName.trim(), value: t.value.trim() })),
       });
-      router.push("/hostedzones");
+      router.push(routes.hostedZones);
     } catch (err) {
       setError(getApiErrorMessage(err, "Unable to create hosted zone"));
     } finally {
@@ -155,7 +156,7 @@ export function CreateHostedZoneContent() {
 
       <div className="mt-6 flex flex-wrap items-center justify-end gap-4 sm:gap-5">
         <Link
-          href="/hostedzones"
+          href={routes.hostedZones}
           className="text-[14px] font-bold leading-5 text-aws-blue hover:underline"
         >
           Cancel

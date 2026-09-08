@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getMe } from "@/features/auth/api/auth-api";
+import { clientEnv } from "@/shared/config/env";
 import { AccountCreatedDialog } from "./account-created-dialog";
 import { AuthBanner } from "./auth-banner";
 import { AuthCard } from "./auth-card";
@@ -12,11 +13,6 @@ import { AuthMarketing } from "./auth-marketing";
 import { AuthTopBar } from "./auth-top-bar";
 
 type AuthMode = "signin" | "signup";
-
-const afterAuthPath = process.env.NEXT_PUBLIC_AFTER_AUTH_PATH;
-if (!afterAuthPath) {
-  throw new Error("NEXT_PUBLIC_AFTER_AUTH_PATH is not set");
-}
 
 export function AuthPage() {
   const router = useRouter();
@@ -29,7 +25,7 @@ export function AuthPage() {
     getMe()
       .then(() => {
         // Already signed in — hosted zones is the app home
-        if (active) router.replace(afterAuthPath);
+        if (active) router.replace(clientEnv.afterAuthPath);
       })
       .catch(() => {
         if (active) setCheckingSession(false);
@@ -41,7 +37,7 @@ export function AuthPage() {
 
   function handleSignInSuccess() {
     // Replace so browser Back does not return to sign-in
-    router.replace(afterAuthPath);
+    router.replace(clientEnv.afterAuthPath);
   }
 
   function handleSignUpSuccess() {

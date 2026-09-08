@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.models import User
 from app.schemas import SignInRequest, SignUpRequest
+from app.services.ids import generate_account_id
 from app.services.password import hash_password, verify_password
 
 
@@ -19,7 +20,12 @@ def register_user(db: Session, payload: SignUpRequest) -> User:
             detail="An account with this phone number already exists",
         )
 
+    account_id = generate_account_id()
+    while db.query(User).filter(User.account_id == account_id).first():
+        account_id = generate_account_id()
+
     user = User(
+        account_id=account_id,
         name=payload.name,
         email=email,
         phone=payload.phone,

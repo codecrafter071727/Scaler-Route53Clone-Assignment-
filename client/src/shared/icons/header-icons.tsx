@@ -20,6 +20,22 @@ export function SearchIcon({ className = "h-4 w-4" }: IconProps) {
   );
 }
 
+/** AWS unified-search / preferences glyph (hexagon + target). */
+export function SearchPrefsIcon({ className = "h-4 w-4" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d="M8 1.4 13.2 4.4v7.2L8 14.6 2.8 11.6V4.4L8 1.4Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
+      />
+      <circle cx="8" cy="8" r="2.4" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="8" cy="8" r="0.9" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function GridIcon({ className = "h-4 w-4" }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden>

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Match ThemeProvider: dark: utilities follow .dark on <html>, not OS preference */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @font-face {
   font-family: "Amazon Ember";
   font-style: normal;

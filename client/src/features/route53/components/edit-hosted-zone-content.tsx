@@ -24,6 +24,7 @@ import {
   type VpcRow,
 } from "@/features/route53/components/vpc-association-panel";
 import { getApiErrorMessage } from "@/features/auth/lib/api-error";
+import { routes } from "@/features/route53/lib/routes";
 
 const DESC_MAX = 256;
 const FIELD_WIDTH = "max-w-[720px]";
@@ -31,7 +32,8 @@ const FIELD_WIDTH = "max-w-[720px]";
 export function EditHostedZoneContent() {
   const params = useParams();
   const router = useRouter();
-  const zoneId = Number(params.id);
+  const zoneId =
+    typeof params.zoneId === "string" ? decodeURIComponent(params.zoneId) : "";
 
   const [detail, setDetail] = useState<HostedZoneDetail | null>(null);
   const [description, setDescription] = useState("");
@@ -43,7 +45,7 @@ export function EditHostedZoneContent() {
   const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
-    if (!Number.isFinite(zoneId)) {
+    if (!zoneId) {
       setLoadError("Invalid hosted zone.");
       setLoading(false);
       return;
@@ -121,7 +123,7 @@ export function EditHostedZoneContent() {
           .filter((t) => t.keyName.trim())
           .map((t) => ({ key: t.keyName.trim(), value: t.value.trim() })),
       });
-      router.push(`/hostedzones/${zoneId}`);
+      router.push(routes.hostedZone(zoneId));
     } catch (err) {
       setError(getApiErrorMessage(err, "Unable to save changes"));
     } finally {
@@ -141,7 +143,7 @@ export function EditHostedZoneContent() {
     return (
       <main className="min-w-0 flex-1 overflow-auto bg-background px-5 pb-8 pt-4 text-[14px]">
         <p className="text-danger">{loadError || "Hosted zone not found."}</p>
-        <Link href="/hostedzones" className="mt-3 inline-block text-aws-blue underline">
+        <Link href={routes.hostedZones} className="mt-3 inline-block text-aws-blue underline">
           Back to hosted zones
         </Link>
       </main>
@@ -215,7 +217,7 @@ export function EditHostedZoneContent() {
 
       <div className="mt-6 flex flex-wrap items-center justify-end gap-4 sm:gap-5">
         <Link
-          href={`/hostedzones/${zoneId}`}
+          href={routes.hostedZone(zoneId)}
           className="text-[14px] font-bold leading-5 text-aws-blue hover:underline"
         >
           Cancel

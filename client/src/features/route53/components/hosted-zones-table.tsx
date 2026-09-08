@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { HostedZoneListItem } from "@/features/route53/api/hosted-zones-api";
 import { tableColumns } from "@/features/route53/data/nav-data";
+import { routes } from "@/features/route53/lib/routes";
 import type { SortColumn, SortDir } from "@/features/route53/lib/sort-hosted-zones";
 import { SortIcon } from "@/shared/icons";
 
@@ -10,19 +11,19 @@ type Props = {
   zones: HostedZoneListItem[];
   loading: boolean;
   hasFilter: boolean;
-  selectedId: number | null;
+  selectedZoneId: string | null;
   sortColumn: SortColumn | null;
   sortDir: SortDir;
   onSort: (column: SortColumn) => void;
-  onSelect: (id: number) => void;
-  onOpenDetails: (id: number) => void;
+  onSelect: (hostedZoneId: string) => void;
+  onOpenDetails: (hostedZoneId: string) => void;
 };
 
 export function HostedZonesTable({
   zones,
   loading,
   hasFilter,
-  selectedId,
+  selectedZoneId,
   sortColumn,
   sortDir,
   onSort,
@@ -93,7 +94,7 @@ export function HostedZonesTable({
                   </div>
                   {!hasFilter ? (
                     <Link
-                      href="/hostedzones/create"
+                      href={routes.hostedZonesCreate}
                       className="mt-4 inline-flex h-8 items-center rounded-[20px] border-2 border-aws-orange bg-aws-orange px-5 text-[14px] font-bold leading-none text-on-orange hover:border-aws-orange-hover hover:bg-aws-orange-hover"
                     >
                       Create hosted zone
@@ -104,11 +105,11 @@ export function HostedZonesTable({
             </tr>
           ) : (
             zones.map((zone) => {
-              const selected = selectedId === zone.id;
+              const selected = selectedZoneId === zone.hosted_zone_id;
               return (
                 <tr
-                  key={zone.id}
-                  onClick={() => onSelect(zone.id)}
+                  key={zone.hosted_zone_id}
+                  onClick={() => onSelect(zone.hosted_zone_id)}
                   className={`cursor-pointer border-b border-border ${
                     selected
                       ? "rounded-sm bg-info outline outline-2 outline-outline-row -outline-offset-2"
@@ -120,7 +121,7 @@ export function HostedZonesTable({
                       type="radio"
                       name="hosted-zone-selection"
                       checked={selected}
-                      onChange={() => onSelect(zone.id)}
+                      onChange={() => onSelect(zone.hosted_zone_id)}
                       onClick={(e) => e.stopPropagation()}
                       className="align-middle accent-aws-blue"
                       aria-label={`Select ${zone.domain_name}`}
@@ -132,7 +133,7 @@ export function HostedZonesTable({
                       className="text-left text-aws-blue hover:underline"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onOpenDetails(zone.id);
+                        onOpenDetails(zone.hosted_zone_id);
                       }}
                     >
                       {zone.domain_name}

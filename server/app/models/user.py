@@ -14,6 +14,9 @@ class User(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    account_id: Mapped[str] = mapped_column(
+        String(12), unique=True, index=True, nullable=False
+    )
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     email: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     phone: Mapped[str] = mapped_column(String(32), nullable=False, index=True)

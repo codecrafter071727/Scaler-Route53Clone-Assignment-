@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "Scaler Assignment API"
     api_prefix: str = "/api"
-    database_url: str = "sqlite:///./app.db"
+    database_url: str = "sqlite:///./data/app.db"
     cors_origins: str = "http://localhost:3000"
 
     session_cookie_name: str = "session_token"

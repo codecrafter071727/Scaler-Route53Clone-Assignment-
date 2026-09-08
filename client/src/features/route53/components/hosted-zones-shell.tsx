@@ -10,10 +10,17 @@ import {
   sectionLabelForPath,
   titleForPath,
 } from "@/features/route53/data/nav-data";
+import {
+  HOSTED_ZONE_ID_RE,
+  routes,
+} from "@/features/route53/lib/routes";
 
 type Props = {
   children: ReactNode;
 };
+
+const hz = routes.hostedZones.replace(/\//g, "\\/");
+const zoneIdCapture = `(${HOSTED_ZONE_ID_RE})`;
 
 function crumbsForPath(
   pathname: string,
@@ -23,75 +30,79 @@ function crumbsForPath(
   showBreadcrumbInfo: boolean;
   showSplitTools: boolean;
 } {
-  if (pathname.startsWith("/hostedzones/create")) {
+  if (pathname.startsWith(routes.hostedZonesCreate)) {
     return {
       showBreadcrumbInfo: true,
       showSplitTools: false,
       crumbs: [
-        { label: "Route 53", href: "/hostedzones" },
-        { label: "Hosted zones", href: "/hostedzones" },
+        { label: "Route 53", href: routes.hostedZones },
+        { label: "Hosted zones", href: routes.hostedZones },
         { label: "Create hosted zone" },
       ],
     };
   }
 
   const createRecordMatch = pathname.match(
-    /^\/hostedzones\/(\d+)\/create-record\/?$/,
+    new RegExp(`^${hz}/${zoneIdCapture}/create-record/?$`),
   );
   if (createRecordMatch) {
-    const zoneId = createRecordMatch[1];
+    const hostedZoneId = createRecordMatch[1];
     return {
       showBreadcrumbInfo: true,
       showSplitTools: false,
       crumbs: [
-        { label: "Route 53", href: "/hostedzones" },
-        { label: "Hosted zones", href: "/hostedzones" },
+        { label: "Route 53", href: routes.hostedZones },
+        { label: "Hosted zones", href: routes.hostedZones },
         {
           label: domainName || "Hosted zone",
-          href: `/hostedzones/${zoneId}`,
+          href: routes.hostedZone(hostedZoneId),
         },
         { label: "Create record" },
       ],
     };
   }
 
-  const editMatch = pathname.match(/^\/hostedzones\/(\d+)\/edit\/?$/);
+  const editMatch = pathname.match(
+    new RegExp(`^${hz}/${zoneIdCapture}/edit/?$`),
+  );
   if (editMatch) {
-    const zoneId = editMatch[1];
+    const hostedZoneId = editMatch[1];
     return {
       showBreadcrumbInfo: true,
       showSplitTools: false,
       crumbs: [
-        { label: "Route 53", href: "/hostedzones" },
-        { label: "Hosted zones", href: "/hostedzones" },
+        { label: "Route 53", href: routes.hostedZones },
+        { label: "Hosted zones", href: routes.hostedZones },
         {
           label: domainName || "Hosted zone",
-          href: `/hostedzones/${zoneId}`,
+          href: routes.hostedZone(hostedZoneId),
         },
         { label: "Edit" },
       ],
     };
   }
 
-  const detailMatch = pathname.match(/^\/hostedzones\/(\d+)\/?$/);
+  const detailMatch = pathname.match(
+    new RegExp(`^${hz}/${zoneIdCapture}/?$`),
+  );
   if (detailMatch) {
     return {
       showBreadcrumbInfo: false,
       showSplitTools: false,
       crumbs: [
-        { label: "Route 53", href: "/hostedzones" },
-        { label: "Hosted zones", href: "/hostedzones" },
+        { label: "Route 53", href: routes.hostedZones },
+        { label: "Hosted zones", href: routes.hostedZones },
         { label: domainName || "Hosted zone" },
       ],
     };
   }
 
-  if (pathname === "/hostedzones" || pathname === "/hostedzones/") {
+  if (pathname === routes.hostedZones || pathname === `${routes.hostedZones}/`) {
     return {
       showBreadcrumbInfo: false,
       showSplitTools: true,
       crumbs: [
-        { label: "Route 53", href: "/hostedzones" },
+        { label: "Route 53", href: routes.hostedZones },
         { label: "Hosted zones" },
       ],
     };
@@ -100,7 +111,7 @@ function crumbsForPath(
   const pageTitle = titleForPath(pathname);
   if (pageTitle) {
     const section = sectionLabelForPath(pathname);
-    const crumbs: Crumb[] = [{ label: "Route 53", href: "/hostedzones" }];
+    const crumbs: Crumb[] = [{ label: "Route 53", href: routes.hostedZones }];
     if (section) crumbs.push({ label: section });
     crumbs.push({ label: pageTitle });
     return {
@@ -113,26 +124,26 @@ function crumbsForPath(
   return {
     showBreadcrumbInfo: false,
     showSplitTools: false,
-    crumbs: [{ label: "Route 53", href: "/hostedzones" }],
+    crumbs: [{ label: "Route 53", href: routes.hostedZones }],
   };
 }
 
 /** Persistent shell — header, footer, sidebar stay mounted across page changes. */
 export function HostedZonesShell({ children }: Props) {
-  const pathname = usePathname() || "/hostedzones";
+  const pathname = usePathname() || routes.hostedZones;
   const [domainName, setDomainName] = useState("");
 
   useEffect(() => {
     const match = pathname.match(
-      /^\/hostedzones\/(\d+)(?:\/(?:create-record|edit))?\/?$/,
+      new RegExp(`^${hz}/${zoneIdCapture}(?:/(?:create-record|edit))?/?$`),
     );
     if (!match) {
       setDomainName("");
       return;
     }
-    const zoneId = Number(match[1]);
+    const hostedZoneId = match[1];
     let active = true;
-    getHostedZone(zoneId)
+    getHostedZone(hostedZoneId)
       .then((zone) => {
         if (active) setDomainName(zone.domain_name);
       })

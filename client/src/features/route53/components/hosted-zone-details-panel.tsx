@@ -11,7 +11,7 @@ import { HostedZoneTagsPanel } from "@/features/route53/components/hosted-zone-t
 import { SettingsIcon, ChevronTiny } from "@/shared/icons";
 
 type Props = {
-  zoneId: number | null;
+  zoneId: string | null;
   onClose: () => void;
 };
 
@@ -118,7 +118,7 @@ function ZoneDetailFields({ detail }: { detail: HostedZoneDetail }) {
   );
 }
 
-function ZoneDetails({ zoneId }: { zoneId: number }) {
+function ZoneDetails({ zoneId }: { zoneId: string }) {
   const [detail, setDetail] = useState<HostedZoneDetail | null>(null);
   const [tags, setTags] = useState<HostedZoneTag[]>([]);
   const [loading, setLoading] = useState(true);

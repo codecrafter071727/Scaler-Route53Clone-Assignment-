@@ -1,3 +1,5 @@
+import { routes } from "@/features/route53/lib/routes";
+
 export type NavLink = {
   label: string;
   href?: string;
@@ -11,49 +13,55 @@ export type NavSection = {
 };
 
 export const topLinks: NavLink[] = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Hosted zones", href: "/hostedzones" },
-  { label: "Health checks", href: "/healthchecks" },
-  { label: "Profiles", href: "/profiles" },
+  { label: "Dashboard", href: routes.dashboard },
+  { label: "Hosted zones", href: routes.hostedZones },
+  { label: "Health checks", href: routes.healthChecks },
+  { label: "Profiles", href: routes.profiles },
 ];
 
 export const navSections: NavSection[] = [
   {
     title: "Global Resolver",
     items: [
-      { label: "Global resolvers", href: "/globalresolver/global-resolvers", badge: "New" },
-      { label: "Shared DNS views", href: "/globalresolver/shared-dns-views", badge: "New" },
+      {
+        label: "Global resolvers",
+        href: routes.globalResolvers,
+        badge: "New",
+      },
+      {
+        label: "Shared DNS views",
+        href: routes.sharedDnsViews,
+        badge: "New",
+      },
     ],
   },
   {
     title: "VPC Resolver",
     items: [
-      { label: "VPCs", href: "/vpcresolver/vpcs" },
-      { label: "Inbound endpoints", href: "/vpcresolver/inbound-endpoints" },
-      { label: "Outbound endpoints", href: "/vpcresolver/outbound-endpoints" },
-      { label: "Rules", href: "/vpcresolver/rules" },
-      { label: "Query logging", href: "/vpcresolver/query-logging" },
-      { label: "Outposts", href: "/vpcresolver/outposts" },
+      { label: "VPCs", href: routes.vpcs },
+      { label: "Inbound endpoints", href: routes.inboundEndpoints },
+      { label: "Outbound endpoints", href: routes.outboundEndpoints },
+      { label: "Rules", href: routes.rules },
+      { label: "Query logging", href: routes.queryLogging },
+      { label: "Outposts", href: routes.outposts },
     ],
   },
   {
     title: "Domains",
     items: [
-      { label: "Registered domains", href: "/domains/registered-domains" },
-      { label: "Requests", href: "/domains/requests" },
+      { label: "Registered domains", href: routes.registeredDomains },
+      { label: "Requests", href: routes.domainRequests },
     ],
   },
   {
     title: "IP-based routing",
-    items: [
-      { label: "CIDR collections", href: "/ip-based-routing/cidr-collections" },
-    ],
+    items: [{ label: "CIDR collections", href: routes.cidrCollections }],
   },
   {
     title: "Traffic flow",
     items: [
-      { label: "Traffic policies", href: "/traffic-flow/traffic-policies" },
-      { label: "Policy records", href: "/traffic-flow/policy-records" },
+      { label: "Traffic policies", href: routes.trafficPolicies },
+      { label: "Policy records", href: routes.policyRecords },
     ],
   },
 ];

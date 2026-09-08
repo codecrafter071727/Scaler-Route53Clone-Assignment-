@@ -18,11 +18,13 @@ import {
   type RecordDraft,
 } from "@/features/route53/data/record-form-options";
 import { getApiErrorMessage } from "@/features/auth/lib/api-error";
+import { routes } from "@/features/route53/lib/routes";
 
 export function CreateRecordContent() {
   const params = useParams();
   const router = useRouter();
-  const zoneId = Number(params.id);
+  const zoneId =
+    typeof params.zoneId === "string" ? decodeURIComponent(params.zoneId) : "";
   const draftKey = useId();
 
   const [zone, setZone] = useState<HostedZoneDetail | null>(null);
@@ -37,7 +39,7 @@ export function CreateRecordContent() {
   ]);
 
   const load = useCallback(async () => {
-    if (!Number.isFinite(zoneId)) {
+    if (!zoneId) {
       setError("Invalid hosted zone.");
       setLoading(false);
       return;
@@ -45,12 +47,12 @@ export function CreateRecordContent() {
     setLoading(true);
     setError("");
     try {
-      const [zoneData, records] = await Promise.all([
+      const [zoneData, recordsPage] = await Promise.all([
         getHostedZone(zoneId),
-        listRecordSets(zoneId),
+        listRecordSets(zoneId, { page: 1, page_size: 100 }),
       ]);
       setZone(zoneData);
-      setExisting(records);
+      setExisting(recordsPage.items);
     } catch {
       setError("Unable to load hosted zone.");
       setZone(null);
@@ -121,7 +123,7 @@ export function CreateRecordContent() {
         zone.domain_name,
       );
       router.push(
-        `/hostedzones/${zoneId}?created=${encodeURIComponent(lastName)}`,
+        `${routes.hostedZone(zoneId)}?created=${encodeURIComponent(lastName)}`,
       );
     } catch (err) {
       setSubmitError(
@@ -145,7 +147,7 @@ export function CreateRecordContent() {
     return (
       <main className="min-w-0 flex-1 overflow-auto bg-background px-6 pb-8 pt-5 text-[14px]">
         <p className="text-danger">{error || "Hosted zone not found."}</p>
-        <Link href="/hostedzones" className="mt-3 inline-block text-aws-blue underline">
+        <Link href={routes.hostedZones} className="mt-3 inline-block text-aws-blue underline">
           Back to hosted zones
         </Link>
       </main>
@@ -220,7 +222,7 @@ export function CreateRecordContent() {
 
       <div className="mt-5 flex flex-wrap items-center justify-end gap-4">
         <Link
-          href={`/hostedzones/${zoneId}`}
+          href={routes.hostedZone(zoneId)}
           className="text-[14px] font-bold text-aws-blue hover:underline"
         >
           Cancel

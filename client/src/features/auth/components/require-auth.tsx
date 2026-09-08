@@ -3,11 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { getMe } from "@/features/auth/api/auth-api";
-
-const loginPath = process.env.NEXT_PUBLIC_LOGIN_PATH;
-if (!loginPath) {
-  throw new Error("NEXT_PUBLIC_LOGIN_PATH is not set");
-}
+import { clientEnv } from "@/shared/config/env";
 
 type Props = {
   children: ReactNode;
@@ -24,7 +20,7 @@ export function RequireAuth({ children }: Props) {
         if (active) setReady(true);
       })
       .catch(() => {
-        if (active) router.replace(loginPath);
+        if (active) router.replace(clientEnv.loginPath);
       });
     return () => {
       active = false;

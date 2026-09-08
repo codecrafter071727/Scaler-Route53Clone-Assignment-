@@ -1,49 +1,51 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   listRecordSets,
   type RecordSet,
 } from "@/features/route53/api/hosted-zones-api";
+import { DeleteRecordModal } from "@/features/route53/components/delete-record-modal";
 import { InfoLink } from "@/features/route53/components/form-bits";
+import { HostedZoneRecordsTable } from "@/features/route53/components/hosted-zone-records-table";
+import { RecordsFacetFilter } from "@/features/route53/components/records-facet-filter";
 import {
-  CaretDown,
-  RefreshIcon,
-  SearchIcon,
-  SettingsIcon,
-  SortIcon,
-} from "@/shared/icons";
+  RecordsOutlineBtn,
+  RecordsPrimaryBtn,
+} from "@/features/route53/components/records-panel-buttons";
+import { RecordsPropertyFilter } from "@/features/route53/components/records-property-filter";
+import { RecordDeletedFlash } from "@/features/route53/components/record-deleted-flash";
+import { TablePagination } from "@/features/route53/components/table-pagination";
+import {
+  ALIAS_FACET_OPTIONS,
+  ROUTING_FACET_OPTIONS,
+  TYPE_FACET_OPTIONS,
+  recordTokensToApiFilters,
+  type RecordFilterToken,
+  type RecordListFilters,
+} from "@/features/route53/data/record-filter-options";
+import { isProtectedRecord } from "@/features/route53/lib/is-protected-record";
+import { DEFAULT_PAGE_SIZE } from "@/features/route53/lib/pagination";
+import { routes } from "@/features/route53/lib/routes";
+import {
+  nextRecordSortState,
+  sortRecordSets,
+  type RecordSortColumn,
+  type SortDir,
+} from "@/features/route53/lib/sort-record-sets";
+import { RefreshIcon } from "@/shared/icons";
 
 type Props = {
-  zoneId: number;
+  zoneId: string;
+  domainName: string;
   recordCount: number;
   onCountChange?: (count: number) => void;
 };
 
-const COLUMNS = [
-  "Record name",
-  "Type",
-  "Routing policy",
-  "Differentiator",
-  "Alias",
-  "Value/Route traffic to",
-  "TTL (seconds)",
-  "Health check ID",
-  "Evaluate target health",
-  "Record ID",
-] as const;
-
-function formatTtl(ttl: number) {
-  return ttl.toLocaleString("en-US");
-}
-
-function dash(value: string | null | undefined) {
-  return value && value.trim() ? value : "-";
-}
-
 export function HostedZoneRecordsPanel({
   zoneId,
+  domainName,
   recordCount,
   onCountChange,
 }: Props) {
@@ -51,231 +53,234 @@ export function HostedZoneRecordsPanel({
   const [records, setRecords] = useState<RecordSet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<RecordSortColumn | null>(null);
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [tokens, setTokens] = useState<RecordFilterToken[]>([]);
+  const [freeText, setFreeText] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  const [routingFilter, setRoutingFilter] = useState<string | null>(null);
+  const [aliasFilter, setAliasFilter] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const apiFilters = useMemo((): RecordListFilters => {
+    const fromTokens = recordTokensToApiFilters(tokens);
+    return {
+      ...fromTokens,
+      ...(typeFilter ? { type: typeFilter } : {}),
+      ...(routingFilter ? { routing_policy: routingFilter } : {}),
+      ...(aliasFilter ? { alias: aliasFilter } : {}),
+      ...(freeText.trim() ? { q: freeText.trim() } : {}),
+    };
+  }, [tokens, typeFilter, routingFilter, aliasFilter, freeText]);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const data = await listRecordSets(zoneId);
-      setRecords(data);
-      onCountChange?.(data.length);
+      const data = await listRecordSets(zoneId, {
+        ...apiFilters,
+        page,
+        page_size: DEFAULT_PAGE_SIZE,
+      });
+      setRecords(data.items);
+      setTotal(data.total);
+      setTotalPages(data.total_pages);
+      onCountChange?.(data.total);
+      if (data.total_pages > 0 && page > data.total_pages) {
+        setPage(data.total_pages);
+      }
+      setSelectedIds((prev) => {
+        const next = new Set<number>();
+        for (const id of prev) {
+          if (data.items.some((r) => r.id === id)) next.add(id);
+        }
+        return next;
+      });
     } catch {
       setError("Unable to load records.");
       setRecords([]);
+      setTotal(0);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
-  }, [zoneId, onCountChange]);
+  }, [zoneId, apiFilters, page, onCountChange]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
-  const count = loading ? recordCount : records.length;
+  useEffect(() => {
+    setPage(1);
+  }, [apiFilters]);
+
+  const selectedRecords = useMemo(
+    () =>
+      records.filter(
+        (r) => selectedIds.has(r.id) && !isProtectedRecord(r, domainName),
+      ),
+    [records, selectedIds, domainName],
+  );
+
+  const sortedRecords = useMemo(() => {
+    if (!sortColumn) return records;
+    return sortRecordSets(records, sortColumn, sortDir);
+  }, [records, sortColumn, sortDir]);
+
+  const count = loading ? recordCount : total;
+  const canDelete = selectedRecords.length > 0;
+
+  function handleSort(column: RecordSortColumn) {
+    const next = nextRecordSortState(sortColumn, sortDir, column);
+    setSortColumn(next.column);
+    setSortDir(next.dir);
+  }
+
+  function toggleId(id: number) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAll(ids: number[]) {
+    setSelectedIds((prev) => {
+      const allOn = ids.length > 0 && ids.every((id) => prev.has(id));
+      if (allOn) return new Set();
+      return new Set(ids);
+    });
+  }
 
   return (
-    <section className="rounded-2xl border border-border bg-card">
-      <div className="flex flex-wrap items-start justify-between gap-3 px-5 pt-4">
-        <div className="flex items-center gap-2 text-[18px] font-bold leading-6 text-foreground">
-          <span>Records ({count})</span>
-          <InfoLink />
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            aria-label="Refresh records"
-            onClick={() => void load()}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-aws-blue bg-surface text-aws-blue"
-          >
-            <RefreshIcon className="h-[18px] w-[18px]" />
-          </button>
-          <OutlineBtn disabled>Delete record</OutlineBtn>
-          <OutlineBtn>Import zone file</OutlineBtn>
-          <PrimaryBtn onClick={() => router.push(`/hostedzones/${zoneId}/create-record`)}>
-            Create record
-          </PrimaryBtn>
-        </div>
-      </div>
+    <>
+      {successMessage ? (
+        <RecordDeletedFlash
+          message={successMessage}
+          onDismiss={() => setSuccessMessage(null)}
+        />
+      ) : null}
 
-      <p className="mt-3 px-5 text-[14px] leading-5 text-foreground">
-        Automatic mode is the current search behavior optimized for best filter
-        results.{" "}
-        <a href="#" className="text-aws-blue underline underline-offset-2">
-          To change modes go to settings.
-        </a>
-      </p>
+      <section className="rounded-2xl border border-border bg-card">
+        <div className="flex flex-wrap items-start justify-between gap-3 px-5 pt-4">
+          <div className="flex items-center gap-2 text-[18px] font-bold leading-6 text-foreground">
+            <span>Records ({count})</span>
+            <InfoLink />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              aria-label="Refresh records"
+              onClick={() => void load()}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-aws-blue bg-surface text-aws-blue"
+            >
+              <RefreshIcon className="h-[18px] w-[18px]" />
+            </button>
+            <RecordsOutlineBtn
+              disabled={!canDelete}
+              onClick={() => setDeleteOpen(true)}
+            >
+              Delete record
+            </RecordsOutlineBtn>
+            <RecordsOutlineBtn>Import zone file</RecordsOutlineBtn>
+            <RecordsPrimaryBtn
+              onClick={() =>
+                router.push(routes.hostedZoneCreateRecord(zoneId))
+              }
+            >
+              Create record
+            </RecordsPrimaryBtn>
+          </div>
+        </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 pb-3">
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-          <div className="relative min-w-0 max-w-full flex-1 sm:min-w-[220px] sm:max-w-[420px]">
-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-            <input
-              aria-label="Filter records by property or value"
-              placeholder="Filter records by property or value"
-              className="h-9 w-full rounded-[8px] border border-border-strong bg-surface py-0 pl-9 pr-3 text-[14px] text-foreground outline-none placeholder:italic placeholder:text-placeholder focus:border-aws-blue"
+        <p className="mt-3 px-5 text-[14px] leading-5 text-foreground">
+          Automatic mode is the current search behavior optimized for best
+          filter results.{" "}
+          <a href="#" className="text-aws-blue underline underline-offset-2">
+            To change modes go to settings.
+          </a>
+        </p>
+
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 pb-3">
+          <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2">
+            <RecordsPropertyFilter
+              zoneId={zoneId}
+              tokens={tokens}
+              onTokensChange={setTokens}
+              onFreeTextSearch={setFreeText}
+            />
+            <RecordsFacetFilter
+              label="Type"
+              options={TYPE_FACET_OPTIONS}
+              value={typeFilter}
+              onChange={setTypeFilter}
+            />
+            <RecordsFacetFilter
+              label="Routing p..."
+              options={ROUTING_FACET_OPTIONS}
+              value={routingFilter}
+              onChange={setRoutingFilter}
+            />
+            <RecordsFacetFilter
+              label="Alias"
+              options={ALIAS_FACET_OPTIONS}
+              value={aliasFilter}
+              onChange={setAliasFilter}
             />
           </div>
-          <FilterChip label="Type" />
-          <FilterChip label="Routing p..." />
-          <FilterChip label="Alias" />
-        </div>
-        <div className="flex shrink-0 items-center">
-          <div className="flex items-center gap-3.5 pr-2.5">
-            <button
-              type="button"
-              aria-label="Previous page"
-              className="text-[18px] font-normal leading-none text-muted"
-              disabled
-            >
-              &lt;
-            </button>
-            <span className="text-[15px] font-bold leading-none text-foreground">
-              1
-            </span>
-            <button
-              type="button"
-              aria-label="Next page"
-              className="text-[18px] font-normal leading-none text-muted"
-              disabled
-            >
-              &gt;
-            </button>
+          <div className="flex shrink-0 items-center self-center">
+            <TablePagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           </div>
-          <div className="mx-1 h-4 w-px bg-border" />
-          <button
-            type="button"
-            aria-label="Preferences"
-            className="ml-0.5 flex h-7 w-7 items-center justify-center text-foreground"
-          >
-            <SettingsIcon className="h-4 w-4" />
-          </button>
         </div>
-      </div>
 
-      {error ? (
-        <p className="px-5 py-6 text-[14px] text-danger">{error}</p>
-      ) : loading ? (
-        <p className="px-5 py-6 text-[14px] text-muted-2">Loading records…</p>
-      ) : (
-        <div className="overflow-x-auto px-1 pb-2">
-          <table className="w-full min-w-[1100px] border-collapse text-left text-[14px] text-foreground">
-            <thead>
-              <tr className="border-b border-border bg-table-hover">
-                <th className="w-10 px-3 py-2.5 align-middle">
-                  <input type="checkbox" aria-label="Select all records" />
-                </th>
-                {COLUMNS.map((col, index) => (
-                  <th
-                    key={col}
-                    className={`relative px-3 py-2.5 align-middle ${
-                      index < COLUMNS.length - 1
-                        ? "after:absolute after:right-0 after:top-1/2 after:h-4 after:w-px after:-translate-y-1/2 after:bg-border"
-                        : ""
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      className="flex w-full items-center justify-between gap-2 bg-transparent p-0 text-[14px] font-bold leading-5 text-sidebar-text"
-                    >
-                      <span className="truncate">{col}</span>
-                      <SortIcon className="h-2 w-2.5 shrink-0 text-sidebar-text" />
-                    </button>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((record) => (
-                <tr
-                  key={record.id}
-                  className="border-b border-border hover:bg-table-hover"
-                >
-                  <td className="px-3 py-2.5 align-top">
-                    <input
-                      type="checkbox"
-                      aria-label={`Select ${record.record_name} ${record.record_type}`}
-                    />
-                  </td>
-                  <td className="px-3 py-2.5 align-top">{record.record_name}</td>
-                  <td className="px-3 py-2.5 align-top">{record.record_type}</td>
-                  <td className="px-3 py-2.5 align-top">{record.routing_policy}</td>
-                  <td className="px-3 py-2.5 align-top">
-                    {dash(record.differentiator)}
-                  </td>
-                  <td className="px-3 py-2.5 align-top">
-                    {record.alias ? "Yes" : "No"}
-                  </td>
-                  <td className="px-3 py-2.5 align-top">
-                    {record.value.map((line) => (
-                      <div key={line} className="whitespace-nowrap">
-                        {line}
-                      </div>
-                    ))}
-                  </td>
-                  <td className="px-3 py-2.5 align-top">{formatTtl(record.ttl)}</td>
-                  <td className="px-3 py-2.5 align-top">
-                    {dash(record.health_check_id)}
-                  </td>
-                  <td className="px-3 py-2.5 align-top">
-                    {record.evaluate_target_health ? "Yes" : "-"}
-                  </td>
-                  <td className="px-3 py-2.5 align-top">
-                    {dash(record.record_id)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </section>
-  );
-}
+        {error ? (
+          <p className="px-5 py-6 text-[14px] text-danger">{error}</p>
+        ) : loading ? (
+          <p className="px-5 py-6 text-[14px] text-muted-2">Loading records…</p>
+        ) : (
+          <HostedZoneRecordsTable
+            records={sortedRecords}
+            domainName={domainName}
+            selectedIds={selectedIds}
+            sortColumn={sortColumn}
+            sortDir={sortDir}
+            onSort={handleSort}
+            onToggle={toggleId}
+            onToggleAll={toggleAll}
+          />
+        )}
+      </section>
 
-function FilterChip({ label }: { label: string }) {
-  return (
-    <button
-      type="button"
-      className="inline-flex h-9 items-center gap-1.5 rounded-[8px] border border-border-strong bg-surface px-3 text-[14px] font-bold text-foreground"
-    >
-      {label}
-      <CaretDown className="h-3 w-3 text-aws-blue" />
-    </button>
-  );
-}
-
-function OutlineBtn({
-  children,
-  disabled,
-}: {
-  children: string;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-blue bg-surface px-4 text-[14px] font-[700] leading-none text-aws-blue hover:bg-info disabled:cursor-not-allowed disabled:border-disabled-border disabled:text-muted-2 disabled:hover:bg-surface"
-    >
-      {children}
-    </button>
-  );
-}
-
-function PrimaryBtn({
-  children,
-  onClick,
-}: {
-  children: string;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="inline-flex h-8 items-center rounded-[20px] border-2 border-aws-orange bg-aws-orange px-5 text-[14px] font-[700] leading-none text-on-orange hover:border-aws-orange-hover hover:bg-aws-orange-hover"
-    >
-      {children}
-    </button>
+      <DeleteRecordModal
+        zoneId={zoneId}
+        records={selectedRecords}
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onDeleted={(deleted) => {
+          setSelectedIds(new Set());
+          setDeleteOpen(false);
+          if (deleted.length === 1) {
+            setSuccessMessage(
+              `Successfully deleted record ${deleted[0].record_name} (${deleted[0].record_type})`,
+            );
+          } else {
+            setSuccessMessage(
+              `Successfully deleted ${deleted.length} records`,
+            );
+          }
+          void load();
+        }}
+      />
+    </>
   );
 }

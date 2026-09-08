@@ -6,6 +6,7 @@ import {
   GridIcon,
   HelpIcon,
   SearchIcon,
+  SearchPrefsIcon,
   SettingsIcon,
   TerminalIcon,
 } from "@/shared/icons";
@@ -18,7 +19,7 @@ export function ConsoleHeader() {
       <span
         role="img"
         aria-label="AWS"
-        className="inline-block h-6 w-10 shrink-0 bg-white sm:h-7 sm:w-[52px]"
+        className="inline-block h-5 w-8 shrink-0 bg-white sm:h-6 sm:w-11"
         style={{
           WebkitMaskImage: "url(/aws-logo.png)",
           maskImage: "url(/aws-logo.png)",
@@ -38,16 +39,17 @@ export function ConsoleHeader() {
         <GridIcon className="h-[18px] w-[18px]" />
       </button>
 
-      <div className="relative ml-0.5 flex h-8 min-w-0 max-w-[520px] flex-1 items-center sm:ml-1">
-        <SearchIcon className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-[#9ca3af]" />
+      <div className="relative ml-0.5 flex h-8 min-w-0 max-w-[640px] flex-1 items-center sm:ml-1">
+        <SearchIcon className="pointer-events-none absolute left-3 h-3.5 w-3.5 text-[#9ca3af]" />
         <input
           type="search"
           placeholder="Search"
-          className="h-8 w-full rounded border border-header-search-border bg-header-search py-0 pl-8 pr-3 text-[13px] text-white outline-none placeholder:text-[#9ca3af] focus:border-[#539fe5] sm:pr-16"
+          className="h-8 w-full rounded-xl border border-[#545b64] bg-[#0f141a] py-0 pl-9 pr-20 text-[13px] text-white outline-none placeholder:italic placeholder:text-[#9ca3af] focus:border-[#539fe5] sm:pr-[5.5rem]"
         />
-        <span className="pointer-events-none absolute right-2 hidden rounded border border-[#4b5563] px-1.5 py-0.5 text-[11px] text-[#9ca3af] sm:inline">
-          [Alt+S]
-        </span>
+        <div className="pointer-events-none absolute right-2.5 hidden items-center gap-2 text-[12px] text-[#9ca3af] sm:flex">
+          <span>[Alt+S]</span>
+          <SearchPrefsIcon className="h-4 w-4" />
+        </div>
       </div>
 
       <div className="ml-auto flex shrink-0 items-center gap-0.5">

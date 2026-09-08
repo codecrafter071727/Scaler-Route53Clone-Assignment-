@@ -1,18 +1,22 @@
 "use client";
 
-import type { FilterProperty } from "@/features/route53/data/filter-properties";
+type FilterPropertyLike = {
+  key: string;
+  label: string;
+  operator: ":" | "=";
+};
 
 type Props = {
   mode: "properties" | "values";
-  activeProperty: FilterProperty | null;
-  properties: FilterProperty[];
+  activeProperty: FilterPropertyLike | null;
+  properties: FilterPropertyLike[];
   values: string[];
   valuesLoading: boolean;
   text: string;
   highlight: number;
   listId: string;
   onHighlight: (index: number) => void;
-  onSelectProperty: (property: FilterProperty) => void;
+  onSelectProperty: (property: FilterPropertyLike) => void;
   onSelectValue: (value: string) => void;
   onUseTyped: () => void;
 };

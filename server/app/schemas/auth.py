@@ -59,6 +59,7 @@ class SignInRequest(BaseModel):
 
 class UserRead(BaseModel):
     id: int
+    account_id: str
     name: str
     email: EmailStr
     phone: str
