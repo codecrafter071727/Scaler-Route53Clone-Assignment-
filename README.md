@@ -7,7 +7,6 @@ Full-stack clone of the **AWS Route 53 Hosted Zones** console. Users can sign up
 
 ## Table of contents
 
-- [Live demo](#live-demo)
 - [Features](#features)
 - [Project structure](#project-structure)
 - [Architecture](#architecture)
@@ -376,6 +375,7 @@ SQLite is stored under `server/data/` so data persists across API restarts.
 | Create record | `/route53/v2/hostedzones/{HostedZoneId}/create-record` |
 
 ---
+live demo link - https://route53-gamma.vercel.app/
 
 ## Notes
 
